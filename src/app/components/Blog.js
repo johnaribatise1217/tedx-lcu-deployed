@@ -63,20 +63,7 @@ export default function Blog() {
                                         >
                                             {blog.excerpt}
                                         </p>
-                                        <div className="flex items-center gap-4 text-sm text-gray-500">
-                                            <span className="flex items-center gap-1">
-                                                <User size={14} />
-                                                {blog.author}
-                                            </span>
-                                            <span className="flex items-center gap-1">
-                                                <Calendar size={14} />
-                                                {blog.date}
-                                            </span>
-                                            <span className="flex items-center gap-1">
-                                                <Clock size={14} />
-                                                {blog.readTime}
-                                            </span>
-                                        </div>
+
                                     </div>
                                 </div>
                             </Link>

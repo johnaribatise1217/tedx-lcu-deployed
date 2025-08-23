@@ -40,7 +40,7 @@ export default function About() {
                         {/* Left smaller image (takes 2/5 of grid) */}
                         <div className="relative md:col-span-2 col-span-3 md:h-[66vh] h-[40vh] md:w-auto w-full">
                             <Image
-                                src="https://res.cloudinary.com/djoxzzlue/image/upload/v1755805800/IMG_2455_yh9zgq.jpg"
+                                src="/Eni.jpg"
                                 alt="Main image"
                                 fill
                                 className="rounded-2xl object-cover hover:scale-[1.04] transition-transform duration-300 ease-in-out"
@@ -51,7 +51,7 @@ export default function About() {
                         <div className="col-span-3 flex flex-col gap-4">
                             <div className="relative w-full h-[32vh]">
                                 <Image
-                                    src="https://res.cloudinary.com/djoxzzlue/image/upload/v1755806087/IMG_2174_xnku5f.jpg"
+                                    src="/Ted-1.jpg"
                                     alt="Top image"
                                     fill
                                     className="rounded-2xl object-cover hover:scale-[1.04] transition-transform duration-300 ease-in-out"
@@ -59,7 +59,7 @@ export default function About() {
                             </div>
                             <div className="relative w-full h-[32vh]">
                                 <Image
-                                    src="https://res.cloudinary.com/djoxzzlue/image/upload/v1755806096/IMG_2205_xsh05d.jpg"
+                                    src="/Ted-2.jpg"
                                     alt="Bottom image"
                                     fill
                                     className="rounded-2xl object-cover object-center hover:scale-[1.04] transition-transform duration-300 ease-in-out"

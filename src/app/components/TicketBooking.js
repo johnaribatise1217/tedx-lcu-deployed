@@ -1,6 +1,7 @@
 'use client'
-import React, { useState, useEffect } from 'react'
-import { ChevronRight, Check, AlertCircle, Info, X, Menu } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
+import { ChevronRight, Check, AlertCircle, Info, X } from 'lucide-react'
+import { TicketsService } from 'service/TicketApi'
 
 export default function TicketBooking() {
     const [currentStep, setCurrentStep] = useState(1)
@@ -16,6 +17,18 @@ export default function TicketBooking() {
     const [formErrors, setFormErrors] = useState({})
     const [showValidation, setShowValidation] = useState(false)
     const [showMobileSummary, setShowMobileSummary] = useState(false)
+    const [tickets, setTickets] = useState([])
+
+    useEffect(() => {
+        // Fetch tickets from API when component mounts
+        const fetchTickets = async () => {
+            const data = await TicketsService.getTickets()
+            if (data) {
+                setTickets(data)
+            }
+        }
+        fetchTickets()
+    }, [])
 
     const Tickets = [
         {
@@ -258,7 +271,7 @@ export default function TicketBooking() {
                         )}
 
                         <div className="space-y-4 sm:space-y-6 lg:mb-0 mb-20">
-                            {Tickets.map((ticket) => {
+                            {tickets.map((ticket) => {
                                 const quantity = selectedTickets[ticket.id] || 0
                                 return (
                                     <div key={ticket.id} className='w-full'>
@@ -281,7 +294,7 @@ export default function TicketBooking() {
                                                         {ticket.name}
                                                     </h3>
                                                     <p className='text-gray-600 text-sm sm:text-base leading-relaxed mb-3'>
-                                                        {ticket.description}
+                                                        {ticket.ticketDescription}
                                                     </p>
 
                                                     {/* Features - Hidden on mobile, shown on larger screens */}
@@ -524,8 +537,6 @@ export default function TicketBooking() {
                                         <option value=''>Select Gender</option>
                                         <option value='male'>Male</option>
                                         <option value='female'>Female</option>
-                                        <option value='other'>Other</option>
-                                        <option value='prefer-not-to-say'>Prefer not to say</option>
                                     </select>
                                 </div>
 

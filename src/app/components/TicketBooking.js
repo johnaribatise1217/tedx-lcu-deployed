@@ -1,7 +1,8 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { ChevronRight, Check, AlertCircle, Info, X } from 'lucide-react'
-import { TicketsService } from 'service/TicketApi'
+import { TicketsService } from 'service/TicketApi';
+import { PaymentService } from 'service/PaymentApi';
 
 export default function TicketBooking() {
     const [currentStep, setCurrentStep] = useState(1)
@@ -13,52 +14,33 @@ export default function TicketBooking() {
         phone: '',
         institution: '',
         gender: '',
+        faculty: '',
+        courseOfStudy: '',
     })
     const [formErrors, setFormErrors] = useState({})
     const [showValidation, setShowValidation] = useState(false)
     const [showMobileSummary, setShowMobileSummary] = useState(false)
     const [tickets, setTickets] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
 
+    // Fetch tickets from API
     useEffect(() => {
-        // Fetch tickets from API when component mounts
         const fetchTickets = async () => {
-            const data = await TicketsService.getTickets()
-            if (data) {
-                setTickets(data)
+            try {
+                setLoading(true)
+                const response = await TicketsService.getTickets()
+                setTickets(response || [])
+            } catch (err) {
+                setError('Failed to load tickets. Please try again later.')
+                console.error('Error fetching tickets:', err)
+            } finally {
+                setLoading(false)
             }
         }
+
         fetchTickets()
     }, [])
-
-    const Tickets = [
-        {
-            id: 1,
-            name: "Regular Ticket (Early Bird)",
-            shortName: "Early Bird",
-            price: 2500,
-            originalPrice: 3500,
-            savings: 1000,
-            description: "Secure your spot at a discounted rate! Full access to all TEDx talks, networking sessions, and event materials.",
-            features: ["Full access to all talks", "Networking sessions", "Event materials", "Light refreshments"]
-        },
-        {
-            id: 2,
-            name: "Standard Ticket",
-            shortName: "Standard",
-            price: 3500,
-            description: "Complete TEDx experience with keynote presentations, breakout sessions, welcome package and lunch included.",
-            features: ["All keynote presentations", "Interactive breakout sessions", "Welcome package", "Lunch included", "All-day refreshments"]
-        },
-        {
-            id: 3,
-            name: "Premium Ticket",
-            shortName: "Premium",
-            price: 5000,
-            description: "Elevated experience with priority seating, speaker meet-and-greets, premium catering and exclusive gift package.",
-            features: ["Priority seating (first 5 rows)", "Speaker meet-and-greet", "Premium catering", "Dedicated concierge", "Special gift package (₦5,000 value)"],
-            popular: true
-        },
-    ]
 
     const updateTicketQuantity = (ticketId, change) => {
         setSelectedTickets(prev => {
@@ -70,6 +52,12 @@ export default function TicketBooking() {
                 return rest
             }
 
+            if (change > 0 && currentQty === 0) {
+                return {
+                    [ticketId]: newQty
+                }
+            }
+
             return {
                 ...prev,
                 [ticketId]: newQty
@@ -77,20 +65,20 @@ export default function TicketBooking() {
         })
     }
 
-    const calculateSubtotal = () => {
+    const calculateticketPriceTotal = () => {
         return Object.entries(selectedTickets).reduce((total, [ticketId, quantity]) => {
-            const ticket = Tickets.find(t => t.id === parseInt(ticketId))
+            const ticket = tickets.find(t => t.id === ticketId)
             return total + (ticket?.price || 0) * quantity
         }, 0)
     }
 
-    const getTotalTickets = () => {
+    const getticketQty = () => {
         return Object.values(selectedTickets).reduce((total, qty) => total + qty, 0)
     }
 
     const getSelectedTicketsDisplay = () => {
         return Object.entries(selectedTickets).map(([ticketId, quantity]) => {
-            const ticket = Tickets.find(t => t.id === parseInt(ticketId))
+            const ticket = tickets.find(t => t.id === ticketId)
             return { ...ticket, quantity }
         })
     }
@@ -137,7 +125,7 @@ export default function TicketBooking() {
         }
     }
 
-    const handleProceed = () => {
+    const handleProceed = async () => {
         if (currentStep === 1) {
             if (Object.keys(selectedTickets).length === 0) {
                 alert('Please select at least one ticket to proceed.')
@@ -147,13 +135,52 @@ export default function TicketBooking() {
         } else if (currentStep === 2) {
             setShowValidation(true)
             if (validateForm()) {
+                // Build data object with form + ticket info
+                const bookingData = {
+                    user: { ...formData },
+                    // tickets: getSelectedTicketsDisplay(),
+                    total,
+                    ticketQty
+                }
+
+                // Save to localStorage
+                localStorage.setItem("ticketBookingData", JSON.stringify(bookingData))
+
+                // Log for debugging
+                console.log("Saved booking data:", bookingData)
+
                 setCurrentStep(3)
                 setShowValidation(false)
             }
         } else if (currentStep === 3) {
-            alert('Purchase functionality will be implemented when payment methods are ready!')
+            const bookingData = {
+                email: formData.email,
+                ticketId: Object.keys(selectedTickets)[0],
+                quantity: ticketQty,
+            }
+
+            try {
+                const response = await PaymentService.initializePayment(bookingData);
+
+                console.log("Raw payment response:", response);  // 👈 check full structure
+                const authorizationUrl = response.data;
+                console.log("Authorization URL extracted:", authorizationUrl);
+
+                if (authorizationUrl) {
+                    window.location.href = authorizationUrl;
+                } else {
+                    // setError("Failed to initialize payment. Please try again.");
+                    console.log('Failed to initialize payment. Please try again.')
+                }
+            } catch (error) {
+                console.log('Failed to initialize payment. Please try again.', error)
+            }
+            finally {
+                setLoading(false);
+            }
         }
     }
+
 
     const handleBack = () => {
         if (currentStep > 1) {
@@ -172,10 +199,9 @@ export default function TicketBooking() {
         return true
     }
 
-    const subtotal = calculateSubtotal()
-    const fee = subtotal > 0 ? 100 : 0
-    const total = subtotal + fee
-    const totalTickets = getTotalTickets()
+    const ticketPriceTotal = calculateticketPriceTotal()
+    const total = ticketPriceTotal
+    const ticketQty = getticketQty()
 
     // Mobile Summary Component
     const MobileSummary = () => (
@@ -198,7 +224,7 @@ export default function TicketBooking() {
                                 <div key={ticket.id} className='bg-gray-50 p-4 rounded-lg'>
                                     <div className='flex justify-between items-start mb-2'>
                                         <h4 className='font-semibold text-gray-900 text-sm leading-tight'>
-                                            {ticket.shortName || ticket.name}
+                                            {ticket.name}
                                         </h4>
                                         <span className='text-xs bg-gray-200 px-2 py-1 rounded-full font-medium'>
                                             ×{ticket.quantity}
@@ -222,17 +248,14 @@ export default function TicketBooking() {
                         )}
                     </div>
 
-                    {subtotal > 0 && (
+                    {ticketPriceTotal > 0 && (
                         <div className='pt-4 border-t border-gray-200'>
                             <div className='space-y-3'>
                                 <div className='flex justify-between text-base'>
-                                    <span className='text-gray-600'>Subtotal</span>
-                                    <span className='font-medium'>₦{subtotal.toLocaleString()}</span>
+                                    <span className='text-gray-600'>ticketPriceTotal</span>
+                                    <span className='font-medium'>₦{ticketPriceTotal.toLocaleString()}</span>
                                 </div>
-                                <div className='flex justify-between text-base'>
-                                    <span className='text-gray-600'>Processing Fee</span>
-                                    <span className='font-medium'>₦{fee.toLocaleString()}</span>
-                                </div>
+
                                 <div className='flex justify-between text-lg font-bold pt-3 border-t border-gray-200'>
                                     <span>Total</span>
                                     <span>₦{total.toLocaleString()}</span>
@@ -259,148 +282,164 @@ export default function TicketBooking() {
                             </p>
                         </div>
 
-                        {totalTickets > 0 && (
-                            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                        {loading ? (
+                            <div className="flex justify-center items-center py-12">
+                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
+                            </div>
+                        ) : error ? (
+                            <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
                                 <div className="flex items-center gap-2">
-                                    <Check className="text-green-600 flex-shrink-0" size={20} />
-                                    <span className="text-green-800 font-medium">
-                                        {totalTickets} ticket{totalTickets > 1 ? 's' : ''} selected
-                                    </span>
+                                    <AlertCircle className="text-red-600" size={20} />
+                                    <span className="text-red-800">{error}</span>
                                 </div>
                             </div>
-                        )}
-
-                        <div className="space-y-4 sm:space-y-6 lg:mb-0 mb-20">
-                            {tickets.map((ticket) => {
-                                const quantity = selectedTickets[ticket.id] || 0
-                                return (
-                                    <div key={ticket.id} className='w-full'>
-                                        <div className={`relative flex flex-col gap-4 sm:gap-6 p-4 sm:p-6 rounded-xl border-2 transition-all duration-200 ${quantity > 0
-                                            ? 'border-black bg-gray-50'
-                                            : ticket.popular
-                                                ? 'border-blue-200 bg-blue-50'
-                                                : 'border-gray-200'
-                                            }`}>
-
-                                            {ticket.popular && (
-                                                <div className="absolute -top-3 left-4 sm:left-6 bg-blue-600 text-white px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
-                                                    Most Popular
-                                                </div>
-                                            )}
-
-                                            <div className='flex flex-col sm:flex-row sm:items-start justify-between gap-4'>
-                                                <div className="flex-1 min-w-0">
-                                                    <h3 className='text-lg sm:text-xl font-semibold text-gray-900 mb-2'>
-                                                        {ticket.name}
-                                                    </h3>
-                                                    <p className='text-gray-600 text-sm sm:text-base leading-relaxed mb-3'>
-                                                        {ticket.ticketDescription}
-                                                    </p>
-
-                                                    {/* Features - Hidden on mobile, shown on larger screens */}
-                                                    <div className="hidden sm:block space-y-1">
-                                                        {ticket.features.map((feature, index) => (
-                                                            <div key={index} className="flex items-center gap-2">
-                                                                <Check size={14} className="text-green-600 flex-shrink-0 mt-0.5" />
-                                                                <span className="text-sm text-gray-700">{feature}</span>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-
-                                                    {/* Features - Mobile accordion style */}
-                                                    <div className="sm:hidden">
-                                                        <button
-                                                            className="text-blue-600 text-sm font-medium"
-                                                            onClick={(e) => {
-                                                                e.preventDefault()
-                                                                const features = e.target.nextElementSibling
-                                                                features.classList.toggle('hidden')
-                                                                e.target.textContent = features.classList.contains('hidden')
-                                                                    ? 'Show features'
-                                                                    : 'Hide features'
-                                                            }}
-                                                        >
-                                                            Show features
-                                                        </button>
-                                                        <div className="hidden mt-2 space-y-1">
-                                                            {ticket.features.map((feature, index) => (
-                                                                <div key={index} className="flex items-center gap-2">
-                                                                    <Check size={12} className="text-green-600 flex-shrink-0 mt-0.5" />
-                                                                    <span className="text-xs text-gray-700">{feature}</span>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div className="text-center sm:text-right">
-                                                    <div className="flex flex-col items-center sm:items-end">
-                                                        {ticket.originalPrice && (
-                                                            <span className="text-sm text-gray-500 line-through">
-                                                                ₦{ticket.originalPrice.toLocaleString()}
-                                                            </span>
-                                                        )}
-                                                        <p className='text-xl sm:text-2xl font-bold text-gray-900'>
-                                                            ₦{ticket.price.toLocaleString()}
-                                                        </p>
-                                                        {ticket.savings && (
-                                                            <span className="text-sm text-green-600 font-medium">
-                                                                Save ₦{ticket.savings.toLocaleString()}
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className='flex items-center justify-between pt-4 border-t border-gray-200'>
-                                                <div className='flex items-center gap-3 sm:gap-4'>
-                                                    <span className="text-sm font-medium text-gray-700 hidden sm:inline">Quantity:</span>
-                                                    <div className="flex items-center gap-3 sm:gap-4">
-                                                        <button
-                                                            onClick={() => updateTicketQuantity(ticket.id, -1)}
-                                                            disabled={quantity === 0}
-                                                            className='bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:cursor-not-allowed rounded-full w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center text-lg sm:text-base font-semibold transition-colors touch-manipulation'
-                                                        >
-                                                            -
-                                                        </button>
-                                                        <span className='w-8 text-center text-lg font-semibold'>
-                                                            {quantity}
-                                                        </span>
-                                                        <button
-                                                            onClick={() => updateTicketQuantity(ticket.id, 1)}
-                                                            className='bg-gray-200 hover:bg-gray-300 rounded-full w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center text-lg sm:text-base font-semibold transition-colors touch-manipulation'
-                                                        >
-                                                            +
-                                                        </button>
-                                                    </div>
-                                                </div>
-
-                                                {quantity > 0 && (
-                                                    <div className="text-right">
-                                                        <span className="text-base sm:text-lg font-semibold text-gray-900">
-                                                            ₦{(ticket.price * quantity).toLocaleString()}
-                                                        </span>
-                                                    </div>
-                                                )}
-                                            </div>
+                        ) : (
+                            <>
+                                {ticketQty > 0 && (
+                                    <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                                        <div className="flex items-center gap-2">
+                                            <Check className="text-green-600 flex-shrink-0" size={20} />
+                                            <span className="text-green-800 font-medium">
+                                                {ticketQty} ticket{ticketQty > 1 ? 's' : ''} selected
+                                            </span>
                                         </div>
                                     </div>
-                                )
-                            })}
-                        </div>
+                                )}
 
-                        {totalTickets === 0 && (
-                            <div className="mt-6 sm:mt-8 p-4 sm:p-6 bg-yellow-50 border border-yellow-200 rounded-lg">
-                                <div className="flex items-start gap-3">
-                                    <Info className="text-yellow-600 mt-1 flex-shrink-0" size={20} />
-                                    <div>
-                                        <h4 className="font-medium text-yellow-800 mb-1">Select Your Tickets</h4>
-                                        <p className="text-yellow-700 text-sm sm:text-base">
-                                            {` Choose the quantity for each ticket type you'd like to purchase.`}
-                                        </p>
+                                <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                    <div className="flex items-center gap-2">
+                                        <Info className="text-blue-600 flex-shrink-0" size={20} />
+                                        <span className="text-blue-800">
+                                            You can select only one ticket type per order. Choose the type that best suits your needs.
+                                        </span>
                                     </div>
                                 </div>
-                            </div>
+
+                                <div className="space-y-4 sm:space-y-6 lg:mb-0 mb-20">
+                                    {tickets.map((ticket) => {
+                                        const quantity = selectedTickets[ticket.id] || 0
+                                        const isThisTicketSelected = quantity > 0
+                                        const hasOtherTicketSelected = Object.keys(selectedTickets).length > 0 && !isThisTicketSelected
+                                        const isDisabled = hasOtherTicketSelected
+
+                                        return (
+                                            <div key={ticket.id} className='w-full'>
+                                                <div className={`relative flex flex-col gap-4 sm:gap-6 p-4 sm:p-6 rounded-xl border-2 transition-all duration-200 ${quantity > 0
+                                                    ? 'border-black bg-gray-50'
+                                                    : isDisabled
+                                                        ? 'border-gray-200 bg-gray-100 opacity-60'
+                                                        : 'border-gray-200'
+                                                    }`}>
+
+                                                    {isDisabled && (
+                                                        <div className="absolute top-4 right-4">
+                                                            <span className="text-xs bg-gray-300 text-gray-600 px-2 py-1 rounded-full">
+                                                                Another ticket type selected
+                                                            </span>
+                                                        </div>
+                                                    )}
+                                                    <div className='flex flex-col sm:flex-row sm:items-start justify-between gap-4'>
+                                                        <div className="flex-1 min-w-0">
+                                                            <h3 className='text-lg sm:text-xl font-semibold text-gray-900 mb-2'>
+                                                                {ticket.name}
+                                                            </h3>
+                                                            <p className='text-gray-600 text-sm sm:text-base leading-relaxed mb-3'>
+                                                                {ticket.ticketDescription}
+                                                            </p>
+
+                                                            {/* Features - Hidden on mobile, shown on larger screens */}
+                                                            <div className="hidden sm:block space-y-1">
+                                                                {ticket.benefits && ticket.benefits.map((benefit, index) => (
+                                                                    <div key={index} className="flex items-center gap-2">
+                                                                        <Check size={14} className="text-green-600 flex-shrink-0 mt-0.5" />
+                                                                        <span className="text-sm text-gray-700">{benefit}</span>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+
+                                                            {/* Features - Mobile accordion style */}
+                                                            <div className="sm:hidden">
+                                                                <button
+                                                                    className="text-blue-600 text-sm font-medium"
+                                                                    onClick={(e) => {
+                                                                        e.preventDefault()
+                                                                        const features = e.target.nextElementSibling
+                                                                        features.classList.toggle('hidden')
+                                                                        e.target.textContent = features.classList.contains('hidden')
+                                                                            ? 'Show benefits'
+                                                                            : 'Hide benefits'
+                                                                    }}
+                                                                >
+                                                                    Show benefits
+                                                                </button>
+                                                                <div className="hidden mt-2 space-y-1">
+                                                                    {ticket.benefits && ticket.benefits.map((benefit, index) => (
+                                                                        <div key={index} className="flex items-center gap-2">
+                                                                            <Check size={12} className="text-green-600 flex-shrink-0 mt-0.5" />
+                                                                            <span className="text-xs text-gray-700">{benefit}</span>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="text-center sm:text-right">
+                                                            <div className="flex flex-col items-center sm:items-end">
+                                                                <p className='text-xl sm:text-2xl font-bold text-gray-900'>
+                                                                    ₦{ticket.price.toLocaleString()}
+                                                                </p>
+                                                                {ticket.availableQuantity && (
+                                                                    <span className="text-sm text-gray-500 mt-1">
+                                                                        {ticket.availableQuantity} available
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className='flex items-center justify-between pt-4 border-t border-gray-200'>
+                                                        <div className='flex items-center gap-3 sm:gap-4'>
+                                                            <span className="text-sm font-medium text-gray-700 hidden sm:inline">Quantity:</span>
+                                                            <div className="flex items-center gap-3 sm:gap-4">
+                                                                <button
+                                                                    onClick={() => updateTicketQuantity(ticket.id, -1)}
+                                                                    disabled={quantity === 0}
+                                                                    className='bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:cursor-not-allowed rounded-full w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center text-lg sm:text-base font-semibold transition-colors touch-manipulation'
+                                                                >
+                                                                    -
+                                                                </button>
+                                                                <span className='w-8 text-center text-lg font-semibold'>
+                                                                    {quantity}
+                                                                </span>
+                                                                <button
+                                                                    onClick={() => updateTicketQuantity(ticket.id, 1)}
+                                                                    disabled={isDisabled || (ticket.availableQuantity && quantity >= ticket.availableQuantity)}
+                                                                    className={`rounded-full w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center text-lg sm:text-base font-semibold transition-colors touch-manipulation ${isDisabled
+                                                                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                                                        : 'bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:cursor-not-allowed'
+                                                                        }`}
+                                                                >
+                                                                    +
+                                                                </button>
+                                                            </div>
+                                                        </div>
+
+                                                        {quantity > 0 && (
+                                                            <div className="text-right">
+                                                                <span className="text-base sm:text-lg font-semibold text-gray-900">
+                                                                    ₦{(ticket.price * quantity).toLocaleString()}
+                                                                </span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+
+
+                            </>
                         )}
                     </div>
                 )
@@ -550,7 +589,37 @@ export default function TicketBooking() {
                                         value={formData.institution}
                                         onChange={handleFormChange}
                                         className='w-full px-4 py-3 sm:py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none text-base'
-                                        placeholder="Enter your institution"
+                                        placeholder="E.g Leadcity University"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                                <div>
+                                    <label className='block text-sm font-semibold text-gray-700 mb-2'>
+                                        Faculty
+                                    </label>
+                                    <input
+                                        type='text'
+                                        name='faculty'
+                                        value={formData.faculty}
+                                        onChange={handleFormChange}
+                                        className='w-full px-4 py-3 sm:py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none text-base'
+                                        placeholder="E.g Facultty of Science"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className='block text-sm font-semibold text-gray-700 mb-2'>
+                                        Course of Study
+                                    </label>
+                                    <input
+                                        type='text'
+                                        name='courseOfStudy'
+                                        value={formData.courseOfStudy}
+                                        onChange={handleFormChange}
+                                        className='w-full px-4 py-3 sm:py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none text-base'
+                                        placeholder="E.g Computer Science"
                                     />
                                 </div>
                             </div>
@@ -604,28 +673,7 @@ export default function TicketBooking() {
                                 </div>
                             </div>
 
-                            <div className='bg-blue-50 border border-blue-200 p-4 sm:p-6 rounded-xl'>
-                                <div className="flex items-start gap-3">
-                                    <Info className="text-blue-600 mt-1 flex-shrink-0" size={24} />
-                                    <div>
-                                        <h3 className='text-lg font-semibold text-blue-900 mb-2'>
-                                            Payment Methods Coming Soon!
-                                        </h3>
-                                        <p className='text-blue-800 mb-4 text-sm sm:text-base'>
-                                            {` We're setting up secure payment processing with multiple convenient options:`}
-                                        </p>
-                                        <ul className="text-blue-800 space-y-1 text-sm sm:text-base">
-                                            <li>• Credit/Debit Cards (Visa, Mastercard)</li>
-                                            <li>• Bank Transfers</li>
-                                            <li>• Mobile Money (MTN, Airtel, 9Mobile)</li>
-                                            <li>• USSD Payments</li>
-                                        </ul>
-                                        <p className="text-blue-800 mt-4 text-sm">
-                                            {`Your ticket selection has been saved. We'll notify you as soon as payment is available!`}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+
 
                             <div className='mt-6 sm:mt-8 space-y-4 sm:space-y-0 sm:flex sm:gap-4'>
                                 <button
@@ -636,10 +684,10 @@ export default function TicketBooking() {
                                 </button>
                                 <button
                                     onClick={handleProceed}
-                                    className='w-full sm:w-auto px-6 py-3 bg-gray-400 text-white rounded-xl cursor-not-allowed font-medium touch-manipulation'
-                                    disabled
+                                    className='w-full sm:w-auto px-6 py-3 bg-black text-white rounded-xl cursor-pointer font-medium'
+                                    disabled={!canProceed()}
                                 >
-                                    Complete Purchase (Coming Soon)
+                                    Complete Purchase
                                 </button>
                             </div>
                         </div>
@@ -665,14 +713,14 @@ export default function TicketBooking() {
                             Step {currentStep} of 3
                         </p>
                     </div>
-                    {totalTickets > 0 && (
+                    {ticketQty > 0 && (
                         <button
                             onClick={() => setShowMobileSummary(true)}
                             className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg font-medium text-sm"
                         >
                             <span>₦{total.toLocaleString()}</span>
                             <span className="bg-white text-black px-2 py-1 rounded text-xs">
-                                {totalTickets}
+                                {ticketQty}
                             </span>
                         </button>
                     )}
@@ -698,7 +746,7 @@ export default function TicketBooking() {
                                     <div key={ticket.id} className='bg-gray-50 p-4 rounded-lg'>
                                         <div className='flex justify-between items-start mb-2'>
                                             <h4 className='font-semibold text-gray-900 text-sm leading-tight'>
-                                                {ticket.shortName || ticket.name}
+                                                {ticket.name}
                                             </h4>
                                             <span className='text-xs bg-gray-200 px-2 py-1 rounded-full font-medium'>
                                                 ×{ticket.quantity}
@@ -724,17 +772,14 @@ export default function TicketBooking() {
                         </div>
                     </div>
 
-                    {subtotal > 0 && (
+                    {ticketPriceTotal > 0 && (
                         <div className='mt-8 pt-6 border-t border-gray-200'>
                             <div className='space-y-3'>
                                 <div className='flex justify-between text-base'>
-                                    <span className='text-gray-600'>Subtotal</span>
-                                    <span className='font-medium'>₦{subtotal.toLocaleString()}</span>
+                                    <span className='text-gray-600'>ticketPriceTotal</span>
+                                    <span className='font-medium'>₦{ticketPriceTotal.toLocaleString()}</span>
                                 </div>
-                                <div className='flex justify-between text-base'>
-                                    <span className='text-gray-600'>Processing Fee</span>
-                                    <span className='font-medium'>₦{fee.toLocaleString()}</span>
-                                </div>
+
                                 <div className='flex justify-between text-lg font-bold pt-3 border-t border-gray-200'>
                                     <span>Total</span>
                                     <span>₦{total.toLocaleString()}</span>
@@ -749,7 +794,7 @@ export default function TicketBooking() {
                                     : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                                     }`}
                             >
-                                {currentStep === 1 ? `Continue with ${totalTickets} ticket${totalTickets !== 1 ? 's' : ''}` :
+                                {currentStep === 1 ? `Continue with ${ticketQty} ticket${ticketQty !== 1 ? 's' : ''}` :
                                     currentStep === 2 ? 'Proceed to Payment' :
                                         'Complete Purchase'}
                             </button>
@@ -830,7 +875,7 @@ export default function TicketBooking() {
                     </div>
 
                     {/* Mobile Bottom Action Bar */}
-                    {subtotal > 0 && (
+                    {ticketPriceTotal > 0 && (
                         <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-4 z-30">
                             <div className="flex items-center justify-between gap-4">
                                 <div className="flex-1">

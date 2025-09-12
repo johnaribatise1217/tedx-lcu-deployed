@@ -4,58 +4,50 @@ import { motion } from "framer-motion";
 import { Outfit } from "next/font/google";
 import { CalendarDays, MapPin, Clock, Users, Star, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { TicketsService } from "service/TicketApi";
 
 const outfit = Outfit({
     subsets: ["latin"],
     weight: ["400", "500", "600", "700"],
 });
 
-const ticketTiers = [
-    {
-        name: "Student Pass",
-        price: "₦2,500",
-        originalPrice: "₦3,500",
-        description: "Perfect for students and young professionals",
-        features: ["Full event access", "Networking opportunities", "Digital certificate", "Event materials"],
-        popular: false,
-        studentId: true,
-    },
-    {
-        name: "General Admission",
-        price: "₦5,000",
-        originalPrice: "₦7,000",
-        description: "Complete TEDx experience for everyone",
-        features: [
-            "Premium seating",
-            "Welcome refreshments",
-            "Networking lunch",
-            "Digital certificate",
-            "Event swag bag",
-            "Photo opportunities",
-        ],
-        popular: true,
-        studentId: false,
-    },
-    {
-        name: "VIP Experience",
-        price: "₦12,000",
-        originalPrice: "₦15,000",
-        description: "Exclusive access and premium benefits",
-        features: [
-            "Front row seating",
-            "Meet & greet with speakers",
-            "Premium catering",
-            "VIP networking session",
-            "Exclusive swag bag",
-            "Professional photos",
-            "Certificate of attendance",
-        ],
-        popular: false,
-        studentId: false,
-    },
-];
-
 export default function Tickets() {
+    const [tickets, setTickets] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        const fetchTicket = async () => {
+            try {
+                setLoading(true);
+                const response = await TicketsService.getTickets();
+                console.log("Raw API response:", response); // Debug log
+
+                console.log("Mapped tickets:", mappedTickets); // Debug log
+                setTickets(mappedTickets);
+            } catch (error) {
+                console.log('Error fetching tickets:', error);
+                setTickets([]); // Set empty array on error
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchTicket();
+    }, []); // Added dependency array to prevent infinite re-renders
+
+    if (loading) {
+        return (
+            <section className="py-16 md:py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-red-900">
+                <div className="flex items-center justify-center min-h-[400px]">
+                    <div className="text-center">
+                        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-red-400 mx-auto mb-4"></div>
+                        <p className="text-white text-lg">Loading tickets...</p>
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
     return (
         <section
             id="tickets"
@@ -85,95 +77,107 @@ export default function Tickets() {
                     </p>
 
                     {/* Event Details */}
-                    <div className="flex  sm:flex-row flex-wrap items-center justify-center text-center gap-4 sm:gap-8 text-white mb-10 sm:mb-12">
+                    <div className="flex sm:flex-row flex-wrap items-center justify-center text-center gap-4 sm:gap-8 text-white mb-10 sm:mb-12">
                         <div className="flex items-center gap-2 sm:gap-3 text-sm sm:text-lg">
                             <CalendarDays className="w-5 h-5 sm:w-6 sm:h-6 text-red-400" />
-                            <span>November 20th, 2025</span>
+                            <span>Friday, November 7th, 2025</span>
                         </div>
                         <div className="flex items-center gap-2 sm:gap-3 text-sm sm:text-lg">
                             <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-red-400" />
-                            <span>9:00 AM - 5:00 PM</span>
+                            <span>9:00 AM - 4:00 PM</span>
                         </div>
                         <div className="flex items-center gap-2 sm:gap-3 text-sm sm:text-lg">
                             <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-red-400" />
-                            <span>Lead City University</span>
+                            <span>International Conference Center, Lead City University, Ibadan</span>
                         </div>
                         <div className="flex items-center gap-2 sm:gap-3 text-sm sm:text-lg">
                             <Users className="w-5 h-5 sm:w-6 sm:h-6 text-red-400" />
-                            <span>500 Seats Only</span>
+                            <span>200 Seats Only</span>
                         </div>
                     </div>
                 </motion.div>
 
                 {/* Ticket Options */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12 md:mb-16">
-                    {ticketTiers.map((tier, index) => (
-                        <motion.div
-                            key={tier.name}
-                            initial={{ opacity: 0, y: 50 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: index * 0.2 }}
-                            viewport={{ once: true }}
-                            className={`relative bg-white/10 backdrop-blur-sm rounded-2xl p-6 sm:p-8 ${tier.popular ? "border-2 border-red-400 transform scale-[1.02]" : "border border-white/20"
-                                } hover:bg-white/15 transition-all duration-300`}
-                        >
-                            {tier.popular && (
-                                <div className="absolute -top-3 sm:-top-4 left-1/2 transform -translate-x-1/2">
-                                    <span className="bg-red-600 text-white px-4 sm:px-6 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold flex items-center gap-1 sm:gap-2">
-                                        <Star className="w-3 h-3 sm:w-4 sm:h-4" />
-                                        Most Popular
-                                    </span>
-                                </div>
-                            )}
+                {tickets.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12 md:mb-16">
+                        {tickets.map((ticket, index) => (
+                            <motion.div
+                                key={ticket.id}
+                                initial={{ opacity: 0, y: 50 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.6, delay: index * 0.2 }}
+                                viewport={{ once: true }}
+                                className={`relative bg-white/10 backdrop-blur-sm rounded-2xl p-6 sm:p-8 ${ticket.name === 'Circle Ticket' ? "border-2 border-red-400 transform scale-[1.02]" : "border border-white/20"
+                                    } hover:bg-white/15 transition-all duration-300`}
+                            >
+                                {/* Popular badge */}
 
-                            <div className="text-center mb-6">
-                                <h3 className={`${outfit.className} text-xl sm:text-2xl font-bold text-white mb-2`}>
-                                    {tier.name}
-                                </h3>
-                                <p className={`${outfit.className} text-gray-300 text-sm sm:text-base mb-4`}>
-                                    {tier.description}
-                                </p>
-                                <div className="flex items-baseline justify-center gap-2">
-                                    <span className={`${outfit.className} text-3xl sm:text-4xl font-bold text-red-400`}>
-                                        {tier.price}
-                                    </span>
-                                    <span className={`${outfit.className} text-base sm:text-lg text-gray-400 line-through`}>
-                                        {tier.originalPrice}
-                                    </span>
-                                </div>
-                                {tier.studentId && (
-                                    <p className={`${outfit.className} text-yellow-400 text-xs sm:text-sm mt-2`}>
-                                        *Valid student ID required
+
+                                <div className="text-center mb-6">
+                                    <h3 className={`${outfit.className} text-xl sm:text-2xl font-bold text-white mb-2`}>
+                                        {ticket.name}
+                                    </h3>
+                                    <p className={`${outfit.className} text-gray-300 text-sm sm:text-base mb-4`}>
+                                        {ticket.description}
                                     </p>
-                                )}
-                            </div>
+                                    <div className="flex items-baseline justify-center gap-2">
+                                        <span className={`${outfit.className} text-3xl sm:text-4xl font-bold text-red-400`}>
+                                            {ticket.price}
+                                        </span>
 
-                            <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
-                                {tier.features.map((feature, idx) => (
-                                    <li key={idx} className="flex items-center gap-2 sm:gap-3">
-                                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-red-400 rounded-full" />
-                                        <span className={`${outfit.className} text-white text-sm sm:text-base`}>{feature}</span>
-                                    </li>
-                                ))}
-                            </ul>
+                                    </div>
 
-                            <Link href='/tickets'>
-                                <button
-                                    className={`w-full cursor-pointer py-3 sm:py-4 rounded-lg sm:rounded-xl font-semibold text-base sm:text-lg transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 group ${tier.popular
-                                        ? "bg-red-600 hover:bg-red-700 text-white"
-                                        : "bg-white/20 hover:bg-white/30 text-white border border-white/30"
-                                        } hover:scale-105 hover:shadow-2xl`}
-                                >
-                                    Get {tier.name}
-                                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
-                                </button>
-                            </Link>
-                        </motion.div>
-                    ))}
-                </div>
+
+                                    {/* Availability Info */}
+                                    <div className="mt-3 text-center">
+                                        <span className={`${outfit.className} text-xs sm:text-sm text-gray-400`}>
+                                            {ticket.availableQuantity} Tickets Available
+                                        </span>
+
+                                    </div>
+                                </div>
+
+                                {/* Features/Benefits */}
+                                <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
+                                    {ticket.features.map((feature, idx) => (
+                                        <li key={idx} className="flex items-baseline gap-2 sm:gap-3">
+                                            <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-red-400 rounded-full flex-shrink-0" />
+                                            <span className={`${outfit.className} text-white text-sm sm:text-base`}>
+                                                {feature}
+                                            </span>
+                                        </li>
+                                    ))}
+                                </ul>
+
+                                <Link href='/tickets'>
+                                    <button
+                                        className={`w-full cursor-pointer py-3 sm:py-4 rounded-lg sm:rounded-xl font-semibold text-base sm:text-lg transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 group ${ticket.popular
+                                            ? "bg-red-600 hover:bg-red-700 text-white"
+                                            : "bg-white/20 hover:bg-white/30 text-white border border-white/30"
+                                            } hover:scale-105 hover:shadow-2xl ${ticket.availableQuantity === 0
+                                                ? 'opacity-50 cursor-not-allowed'
+                                                : ''
+                                            }`}
+                                        disabled={ticket.availableQuantity === 0}
+                                    >
+                                        {ticket.availableQuantity === 0 ? 'Sold Out' : `Get ${ticket.name}`}
+                                        {ticket.availableQuantity > 0 && (
+                                            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+                                        )}
+                                    </button>
+                                </Link>
+                            </motion.div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center py-12">
+                        <p className="text-white text-xl mb-4">No tickets available at the moment</p>
+                        <p className="text-gray-400">Please check back later for ticket availability</p>
+                    </div>
+                )}
 
                 {/* Urgency Section */}
-                <motion.div
+                {/* <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.6 }}
@@ -183,9 +187,7 @@ export default function Tickets() {
                     <h3 className={`${outfit.className} text-2xl sm:text-3xl font-bold text-white mb-4`}>
                         ⚡ Early Bird Special - Limited Time!
                     </h3>
-                    <p className={`${outfit.className} text-gray-300 text-sm sm:text-lg mb-6`}>
-                        Save up to ₦3,000 when you book before October 15th. Only 150 early bird tickets remaining!
-                    </p>
+
                     <div className="flex justify-center items-center gap-6 sm:gap-8 text-white">
                         <div className="text-center">
                             <div className="text-2xl sm:text-3xl font-bold text-red-400">23</div>
@@ -200,7 +202,7 @@ export default function Tickets() {
                             <div className="text-xs sm:text-sm">Minutes</div>
                         </div>
                     </div>
-                </motion.div>
+                </motion.div> */}
 
                 {/* Final CTA */}
                 <motion.div

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { ChevronRight, Check, AlertCircle, Info, X } from 'lucide-react'
 import { TicketsService } from 'service/TicketApi';
-import { PaymentService } from 'service/PaymentApi';
+// import { PaymentService } from 'service/PaymentApi';
 
 export default function TicketBooking() {
     const [currentStep, setCurrentStep] = useState(1)
@@ -160,7 +160,7 @@ export default function TicketBooking() {
             }
 
             try {
-                const response = await PaymentService.initializePayment(bookingData);
+                const response = await TicketsService.initiateTicket(bookingData);
 
                 console.log("Raw payment response:", response);  // 👈 check full structure
                 const authorizationUrl = response.data;

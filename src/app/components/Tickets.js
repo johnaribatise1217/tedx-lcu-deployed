@@ -21,19 +21,16 @@ export default function Tickets() {
             try {
                 setLoading(true);
                 const response = await TicketsService.getTickets();
-                console.log("Raw API response:", response); // Debug log
-
-                console.log("Mapped tickets:", mappedTickets); // Debug log
-                setTickets(mappedTickets);
+                setTickets(response);
             } catch (error) {
                 console.log('Error fetching tickets:', error);
-                setTickets([]); // Set empty array on error
+                setTickets([]);
             } finally {
                 setLoading(false);
             }
         }
         fetchTicket();
-    }, []); // Added dependency array to prevent infinite re-renders
+    }, []);
 
     if (loading) {
         return (
@@ -122,7 +119,7 @@ export default function Tickets() {
                                     </p>
                                     <div className="flex items-baseline justify-center gap-2">
                                         <span className={`${outfit.className} text-3xl sm:text-4xl font-bold text-red-400`}>
-                                            {ticket.price}
+                                            ₦{ticket.price}
                                         </span>
 
                                     </div>
@@ -139,11 +136,11 @@ export default function Tickets() {
 
                                 {/* Features/Benefits */}
                                 <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
-                                    {ticket.features.map((feature, idx) => (
+                                    {ticket.benefits.map((benefit, idx) => (
                                         <li key={idx} className="flex items-baseline gap-2 sm:gap-3">
                                             <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-red-400 rounded-full flex-shrink-0" />
                                             <span className={`${outfit.className} text-white text-sm sm:text-base`}>
-                                                {feature}
+                                                {benefit}
                                             </span>
                                         </li>
                                     ))}
@@ -151,19 +148,10 @@ export default function Tickets() {
 
                                 <Link href='/tickets'>
                                     <button
-                                        className={`w-full cursor-pointer py-3 sm:py-4 rounded-lg sm:rounded-xl font-semibold text-base sm:text-lg transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 group ${ticket.popular
-                                            ? "bg-red-600 hover:bg-red-700 text-white"
-                                            : "bg-white/20 hover:bg-white/30 text-white border border-white/30"
-                                            } hover:scale-105 hover:shadow-2xl ${ticket.availableQuantity === 0
-                                                ? 'opacity-50 cursor-not-allowed'
-                                                : ''
-                                            }`}
-                                        disabled={ticket.availableQuantity === 0}
-                                    >
-                                        {ticket.availableQuantity === 0 ? 'Sold Out' : `Get ${ticket.name}`}
-                                        {ticket.availableQuantity > 0 && (
-                                            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
-                                        )}
+                                        className="w-full bg-red-gray-600 border-white border-2 hover:bg-red-700 text-white cursor-pointer py-3 sm:py-4 rounded-lg sm:rounded-xl font-semibold text-base sm:text-lg transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 group">
+                                        Get {ticket.name}
+                                        <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+
                                     </button>
                                 </Link>
                             </motion.div>

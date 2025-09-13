@@ -48,6 +48,7 @@ const SuccessPage = () => {
 
   const handleDownloadPdf = async () => {
     const element = printRef.current;
+
     if (!element) {
       return;
     }
@@ -67,7 +68,7 @@ const SuccessPage = () => {
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
 
-    pdf.addImage(data, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    pdf.addImage(data, 'PNG', 0, 0, pdfWidth, pdf.internal.pageSize.getHeight());
     pdf.save('TedxLcuTicket.pdf');
   };
 
@@ -140,7 +141,7 @@ const SuccessPage = () => {
                     ATTENDEE INFORMATION
                   </h3>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 sm:gap-x-6 gap-y-2 sm:gap-y-3 text-xs sm:text-sm">
+                  <div className="grid grid-cols-2 gap-x-4 sm:gap-x-6 gap-y-2 sm:gap-y-3 text-xs sm:text-sm">
                     <div className="mb-2 sm:mb-0">
                       <span className="text-gray-500 font-medium">Name:</span>
                       <p className="font-semibold text-gray-800">
@@ -191,7 +192,7 @@ const SuccessPage = () => {
                     TICKET DETAILS
                   </h3>
 
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2 sm:gap-0">
+                  <div className="flex sm:flex-row justify-between items-start sm:items-center mb-3 gap-2 sm:gap-0">
                     <div className="flex-1">
                       <span className="text-gray-500 font-medium text-xs sm:text-sm">Ticket Type:</span>
                       <p className="font-bold text-gray-800 text-base sm:text-lg">
@@ -227,12 +228,12 @@ const SuccessPage = () => {
                     {/* QR CODE */}
                     <div className="flex justify-center w-full sm:w-auto">
                       {bookingData.qrCodeUrl ? (
-                        <div className="bg-gray-100 p-2 sm:p-3 w-fit rounded-lg border-2 border-dashed border-red-500">
+                        <div className="bg-gray-300 p-2 sm:p-3 w-fit rounded-lg border-2 border-dashed border-red-500">
                           <QRCodeCanvas
                             value={bookingData.qrCodeUrl}
                             size={120}
                             className="sm:!w-[150px] sm:!h-[150px]"
-                            bgColor="#D3D3D3"
+                            bgColor="#DCDCDC"
                             fgColor="#000000"
                             level="H"
                           />

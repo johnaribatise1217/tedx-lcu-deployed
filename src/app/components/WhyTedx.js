@@ -31,7 +31,9 @@ export default function WhyTedx() {
 
                 {/* Description */}
                 <p className={`${outfit.className} text-sm sm:text-lg md:text-xl lg:text-2xl text-left tracking-wide leading-relaxed`}>
-                    {`The world runs on ideas, and the right one can change everything. TEDx Fort Garry brings together voices that challenge the norm, spark new perspectives, and remind us what’s possible when we dare to share. Whether you're here to listen, learn, or lead, this is your invitation to be part of something bigger.`}
+                    TEDx Lead City University aims to unite our community in manners we consider significant, sparking relevant discourse and conversation across campus, through our annual events, and other community engagement activities.
+                    We believe that we can set the stage for the next generation of leaders, from Ibadan, to the world!
+
                 </p>
 
                 {/* Image + Content Grid */}

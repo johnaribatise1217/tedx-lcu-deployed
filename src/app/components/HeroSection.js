@@ -30,17 +30,17 @@ export default function HeroSection() {
             <div></div>
 
             {/* Center content */}
-            <div className="flex flex-col gap-6 items-center text-center max-w-3xl">
+            <div className="flex flex-col gap-6 items-center text-center max-w-full">
                 {/* Date + Location */}
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 text-center justify-center items-center">
+                <div className="flex flex-col lg:flex-row gap-3 sm:gap-6 text-center justify-center items-center">
                     <span className={`${inter.className} text-white flex items-center gap-2 text-sm sm:text-base`}>
                         <CalendarMinus2 className="w-4 h-4 text-white" />
-                        November 20th, 2025
+                        Friday, November 7th, 2025
                     </span>
-                    <span className="hidden sm:block border-r h-5 border-white"></span>
+                    <span className="hidden lg:block border-r h-5 border-white"></span>
                     <span className={`${inter.className} text-white flex items-center gap-2 text-sm sm:text-base`}>
-                        <MapPin className="w-4 h-4 text-white" />
-                        Conference centre, Lead City University
+                        <MapPin className="w-4 h-4 text-white sm:flex hidden" />
+                        International Conference Center, Lead City University, Ibadan.
                     </span>
                 </div>
 
@@ -48,7 +48,7 @@ export default function HeroSection() {
                 <h1
                     className={`${inter.className} text-4xl sm:text-5xl lg:text-[4.3rem] text-white font-bold leading-tight`}
                 >
-                    Where Big Ideas Begin <br className="hidden sm:block" /> Bold Movements
+                    Join the Collective. <br className="hidden sm:block" />Are you in?
                 </h1>
 
                 {/* Button */}

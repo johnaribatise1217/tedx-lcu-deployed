@@ -8,6 +8,12 @@ const nextConfig = {
                 hostname: 'res.cloudinary.com',
                 pathname: '/**',
             },
+
+            {
+                protocol: 'https',
+                hostname: 'tedx-lcu-admin-deployed.vercel.app',
+                pathname: '/**',
+            },
         ],
     },
 };

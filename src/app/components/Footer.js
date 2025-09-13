@@ -35,9 +35,6 @@ export default function Footer() {
 
     const socialLinks = [
         { icon: Instagram, href: "https://instagram.com/tedxleadcityuniversity", label: "Instagram" },
-        { icon: Twitter, href: "https://twitter.com/tedxleadcityuni", label: "Twitter" },
-        { icon: Facebook, href: "https://facebook.com/tedxleadcityuniversity", label: "Facebook" },
-        { icon: Youtube, href: "https://youtube.com/@tedxleadcityuniversity", label: "YouTube" },
         { icon: Linkedin, href: "https://linkedin.com/company/tedxleadcityuniversity", label: "LinkedIn" },
     ];
 
@@ -51,10 +48,7 @@ export default function Footer() {
 
     const importantLinks = [
         { name: "Get Tickets", id: "tickets" },
-        { name: "Become a Speaker", href: "#speaker-application" },
-        { name: "Partner with Us", href: "#partnership" },
-        { name: "Volunteer", href: "#volunteer" },
-        { name: "Media Kit", href: "#media" },
+        { name: "Media Kit", id: "gallery" },
     ];
 
     return (
@@ -99,25 +93,25 @@ export default function Footer() {
                                 <div className="flex items-start gap-3">
                                     <Calendar className="w-5 h-5 text-red-400 flex-shrink-0" />
                                     <span className={`${outfit.className} text-gray-300`}>
-                                        November 20th, 2025 | 9:00 AM - 5:00 PM
+                                        Friday, November 7th, 2025 | 9:00 AM - 4:00 PM
                                     </span>
                                 </div>
                                 <div className="flex items-start gap-3">
                                     <MapPin className="w-5 h-5 text-red-400 flex-shrink-0" />
                                     <span className={`${outfit.className} text-gray-300`}>
-                                        Conference Centre, Lead City University
+                                        International Conference Center, Lead City University.
                                     </span>
                                 </div>
                                 <div className="flex items-start gap-3">
                                     <Mail className="w-5 h-5 text-red-400 flex-shrink-0" />
                                     <span className={`${outfit.className} text-gray-300`}>
-                                        info@tedxleadcityuniversity.com
+                                        tedxleadcityuniversity@gmail.com
                                     </span>
                                 </div>
                                 <div className="flex items-start gap-3">
                                     <Phone className="w-5 h-5 text-red-400 flex-shrink-0" />
                                     <span className={`${outfit.className} text-gray-300`}>
-                                        +234 (0) 806 123 4567
+                                        08085614651, +234 812 541 8541, +234 703 434 6739
                                     </span>
                                 </div>
                             </div>
@@ -216,25 +210,7 @@ export default function Footer() {
                                 ))}
                             </ul>
 
-                            {/* Newsletter Signup */}
-                            <div className="mt-8">
-                                <h5 className={`${outfit.className} text-lg font-semibold mb-4`}>
-                                    Stay Updated
-                                </h5>
-                                <p className={`${outfit.className} text-gray-400 text-sm mb-4`}>
-                                    Get the latest updates and announcements
-                                </p>
-                                <div className="flex flex-col sm:flex-row w-full">
-                                    <input
-                                        type="email"
-                                        placeholder="Your email"
-                                        className="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg sm:rounded-l-lg sm:rounded-r-none focus:outline-none focus:border-red-400 text-white placeholder-gray-500 mb-3 sm:mb-0"
-                                    />
-                                    <button className="px-6 py-2 bg-red-600 hover:bg-red-700 rounded-lg sm:rounded-r-lg sm:rounded-l-none transition-colors duration-300 flex items-center justify-center">
-                                        <Mail className="w-4 h-4" />
-                                    </button>
-                                </div>
-                            </div>
+
                         </motion.div>
                     </div>
                 </div>

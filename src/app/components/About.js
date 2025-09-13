@@ -32,7 +32,7 @@ export default function About() {
                     </h2>
 
                     <p className={`${outfit.className} md:text-2xl text-sm sm:text-left text-justify tracking-wider leading-relaxed`}>
-                        In the spirit of discovering and spreading ideas, TED has created a program called TEDx. TEDx is a program of local, self-organized events that bring people together to share a TED-like experience. Our event is called TEDxFortGarry, where x = independently organized TED event. At our TEDxFortGarry event, TED Talks video and live speakers will combine to spark deep discussion and connection in a small group. The TED Conference provides general guidance for the TEDx program, but individual TEDx events, including ours, are self-organized.
+                        In the spirit of discovering and spreading ideas, TED has created a program called TEDx. TEDx is a program of local, self-organized events that bring people together to share a TED-like experience. Our event is called TEDX Lead City University., where x = independently organized TED event. At our TEDX Lead City University. event, TED Talks video and live speakers will combine to spark deep discussion and connection in a small group. The TED Conference provides general guidance for the TEDx program, but individual TEDx events, including ours, are self-organized.
                     </p>
 
                     {/* Image Grid */}

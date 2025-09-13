@@ -14,7 +14,7 @@ export default function Navbar() {
                 behavior: "smooth",
                 block: "start",
             });
-            setMenuOpen(false); // close menu on click
+            setMenuOpen(false);
         }
     };
 

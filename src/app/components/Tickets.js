@@ -107,7 +107,6 @@ export default function Tickets() {
                                 className={`relative bg-white/10 backdrop-blur-sm rounded-2xl p-6 sm:p-8 ${ticket.name === 'Circle Ticket' ? "border-2 border-red-400 transform scale-[1.02]" : "border border-white/20"
                                     } hover:bg-white/15 transition-all duration-300`}
                             >
-                                {/* Popular badge */}
 
 
                                 <div className="text-center mb-6">

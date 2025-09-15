@@ -32,7 +32,7 @@ export const metadata = {
     "Lead City University",
     "leadcity",
     "LCU",
-    "Tech events in ibadan",
+    "Tech events in Ibadan",
     "the collective",
     "conference",
     "event",

@@ -23,6 +23,7 @@ export default function TicketBooking() {
     const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
+    const [isProcessingPayment, setIsProcessingPayment] = useState(false)
 
     // Fetch tickets from API
     useEffect(() => {
@@ -160,6 +161,7 @@ export default function TicketBooking() {
             }
 
             try {
+                setIsProcessingPayment(true);
                 const response = await TicketsService.initiateTicket(bookingData);
 
                 console.log("Raw payment response:", response);  // 👈 check full structure
@@ -177,6 +179,7 @@ export default function TicketBooking() {
             }
             finally {
                 setLoading(false);
+                setIsProcessingPayment(false);
             }
         }
     }
@@ -607,6 +610,9 @@ export default function TicketBooking() {
                                         className='w-full px-4 py-3 sm:py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none text-base'
                                         placeholder="E.g Facultty of Science"
                                     />
+                                    <p className="mt-1 text-xs text-gray-500">
+                                        Required for Students
+                                    </p>
                                 </div>
 
                                 <div>
@@ -621,16 +627,26 @@ export default function TicketBooking() {
                                         className='w-full px-4 py-3 sm:py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none text-base'
                                         placeholder="E.g Computer Science"
                                     />
+                                    <p className="mt-1 text-xs text-gray-500">
+                                        Required for Students
+                                    </p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className='w-full mt-6 sm:mt-8'>
+                        <div className='w-full mt-6 sm:mt-8 flex gap-3'>
                             <button
                                 onClick={handleBack}
                                 className='w-full sm:w-auto px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium mb-4 sm:mb-0 touch-manipulation'
                             >
                                 ← Back to Tickets
+                            </button>
+
+                            <button
+                                onClick={handleProceed}
+                                className='w-full cursor-pointer bg-black text-white hover:text-black sm:w-auto px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium mb-4 sm:mb-0 touch-manipulation'
+                            >
+                                Proceed to Payment
                             </button>
                         </div>
                     </div>
@@ -684,10 +700,13 @@ export default function TicketBooking() {
                                 </button>
                                 <button
                                     onClick={handleProceed}
-                                    className='w-full sm:w-auto px-6 py-3 bg-black text-white rounded-xl cursor-pointer font-medium'
-                                    disabled={!canProceed()}
+                                    className={`w-full sm:w-auto px-6 py-3 rounded-xl font-medium transition-colors ${isProcessingPayment || !canProceed()
+                                        ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                                        : 'bg-black text-white hover:bg-gray-800 cursor-pointer'
+                                        }`}
+                                    disabled={!canProceed() || isProcessingPayment}
                                 >
-                                    Complete Purchase
+                                    {isProcessingPayment ? 'Processing...' : 'Complete Your Purchase'}
                                 </button>
                             </div>
                         </div>
@@ -788,15 +807,16 @@ export default function TicketBooking() {
 
                             <button
                                 onClick={handleProceed}
-                                disabled={!canProceed()}
-                                className={`w-full px-6 py-4 rounded-xl mt-6 font-semibold transition-all duration-200 ${canProceed()
-                                    ? 'bg-black text-white hover:bg-gray-800 shadow-md hover:shadow-lg'
-                                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                disabled={!canProceed() || isProcessingPayment}
+                                className={`w-full px-6 py-4 rounded-xl mt-6 font-semibold transition-all duration-200 ${isProcessingPayment || !canProceed()
+                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                    : 'bg-black text-white hover:bg-gray-800 shadow-md hover:shadow-lg'
                                     }`}
                             >
-                                {currentStep === 1 ? `Continue with ${ticketQty} ticket${ticketQty !== 1 ? 's' : ''}` :
-                                    currentStep === 2 ? 'Proceed to Payment' :
-                                        'Complete Purchase'}
+                                {isProcessingPayment ? 'Processing...' :
+                                    currentStep === 1 ? `Continue with ${ticketQty} ticket${ticketQty !== 1 ? 's' : ''}` :
+                                        currentStep === 2 ? 'Proceed to Payment' :
+                                            'Complete Purchase'}
                             </button>
 
                             {!canProceed() && currentStep === 2 && (
@@ -891,15 +911,16 @@ export default function TicketBooking() {
                                 </div>
                                 <button
                                     onClick={handleProceed}
-                                    disabled={!canProceed()}
-                                    className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 touch-manipulation ${canProceed()
-                                        ? 'bg-black text-white hover:bg-gray-800'
-                                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                    disabled={!canProceed() || isProcessingPayment}
+                                    className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 touch-manipulation ${isProcessingPayment || !canProceed()
+                                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                        : 'bg-black text-white hover:bg-gray-800'
                                         }`}
                                 >
-                                    {currentStep === 1 ? 'Continue' :
-                                        currentStep === 2 ? 'Proceed' :
-                                            'Purchase'}
+                                    {isProcessingPayment ? 'Processing...' :
+                                        currentStep === 1 ? 'Continue' :
+                                            currentStep === 2 ? 'Proceed' :
+                                                'Purchase'}
                                 </button>
                             </div>
                         </div>

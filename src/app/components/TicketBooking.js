@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react'
 import { ChevronRight, Check, AlertCircle, Info, X } from 'lucide-react'
 import { TicketsService } from 'service/TicketApi';
+import { apiClient } from 'service/apiClient';
+import { successNotify, failureNotify } from '@/app/tickets/utils/toaster';
 // import { PaymentService } from 'service/PaymentApi';
 
 export default function TicketBooking() {
@@ -21,6 +23,11 @@ export default function TicketBooking() {
     const [showValidation, setShowValidation] = useState(false)
     const [showMobileSummary, setShowMobileSummary] = useState(false)
     const [tickets, setTickets] = useState([])
+    const [openDiscounts, setOpenDiscounts] = useState([])
+    const [discountCodeInput, setDiscountCodeInput] = useState('')
+    const [appliedDiscount, setAppliedDiscount] = useState(null)
+    const [discountError, setDiscountError] = useState('')
+    const [discountLoading, setDiscountLoading] = useState(false)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const [isProcessingPayment, setIsProcessingPayment] = useState(false)
@@ -40,7 +47,35 @@ export default function TicketBooking() {
             }
         }
 
+        // fetch tickets and open discounts in parallel
+        const fetchDiscounts = async () => {
+            try {
+                setDiscountLoading(true)
+                const res = await apiClient.get('/discounts/open-discount')
+                const data = res.data?.data || []
+                setOpenDiscounts(data)
+
+                // if there's a saved discount code in localStorage, try to re-apply
+                const saved = localStorage.getItem('discountCode')
+                if (saved) {
+                    const matched = data.find(d => d.code?.toLowerCase() === saved.toLowerCase())
+                    if (matched) {
+                        setAppliedDiscount(matched)
+                        setDiscountCodeInput(matched.code)
+                    } else {
+                        // saved code no longer open - remove
+                        localStorage.removeItem('discountCode')
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to fetch discounts', err)
+            } finally {
+                setDiscountLoading(false)
+            }
+        }
+
         fetchTickets()
+        fetchDiscounts()
     }, [])
 
     const updateTicketQuantity = (ticketId, change) => {
@@ -69,7 +104,9 @@ export default function TicketBooking() {
     const calculateticketPriceTotal = () => {
         return Object.entries(selectedTickets).reduce((total, [ticketId, quantity]) => {
             const ticket = tickets.find(t => t.id === ticketId)
-            return total + (ticket?.price || 0) * quantity
+            if (!ticket) return total
+            const price = appliedDiscount ? Math.round(ticket.price * (1 - (appliedDiscount.percentage || 0) / 100)) : ticket.price
+            return total + (price || 0) * quantity
         }, 0)
     }
 
@@ -80,8 +117,49 @@ export default function TicketBooking() {
     const getSelectedTicketsDisplay = () => {
         return Object.entries(selectedTickets).map(([ticketId, quantity]) => {
             const ticket = tickets.find(t => t.id === ticketId)
-            return { ...ticket, quantity }
+            const discountedPrice = ticket && appliedDiscount ? Math.round(ticket.price * (1 - (appliedDiscount.percentage || 0) / 100)) : ticket?.price
+            return { ...ticket, quantity, discountedPrice }
         })
+    }
+
+    const applyDiscount = async () => {
+        setDiscountError('')
+        if (!discountCodeInput.trim()) {
+            setDiscountError('Please enter a discount code')
+            return
+        }
+
+        setDiscountLoading(true)
+        try {
+            // validate with server endpoint
+            const code = discountCodeInput.trim()
+            const res = await apiClient.get(`/discounts/validate/${encodeURIComponent(code)}`)
+            if (res.data?.success && res.data?.data) {
+                const matched = res.data.data
+                setAppliedDiscount(matched)
+                localStorage.setItem('discountCode', matched.code)
+                successNotify(res.data.statusMessage || 'Discount applied')
+            }
+            // } else {
+            //     const msg = res.data?.statusMessage || 'Invalid or expired discount code'
+            //     setDiscountError(msg)
+            //     failureNotify(msg)
+            // }
+        } catch (err) {
+            console.error('Discount validation failed', err)
+            const msg = err.response?.data?.message || 'Failed to validate discount code'
+            setDiscountError(msg)
+            failureNotify(msg)
+        } finally {
+            setDiscountLoading(false)
+        }
+    }
+
+    const removeDiscount = () => {
+        setAppliedDiscount(null)
+        setDiscountCodeInput('')
+        setDiscountError('')
+        localStorage.removeItem('discountCode')
     }
 
     const validateForm = () => {
@@ -154,10 +232,12 @@ export default function TicketBooking() {
                 setShowValidation(false)
             }
         } else if (currentStep === 3) {
+            const saved = localStorage.getItem('discountCode')
             const bookingData = {
                 email: formData.email,
                 ticketId: Object.keys(selectedTickets)[0],
                 quantity: ticketQty,
+                discountCode : saved.toString()
             }
 
             try {
@@ -166,7 +246,6 @@ export default function TicketBooking() {
 
                 console.log("Raw payment response:", response);  // 👈 check full structure
                 const authorizationUrl = response.data;
-                console.log("Authorization URL extracted:", authorizationUrl);
 
                 if (authorizationUrl) {
                     window.location.href = authorizationUrl;
@@ -235,10 +314,10 @@ export default function TicketBooking() {
                                     </div>
                                     <div className='flex justify-between items-center'>
                                         <span className='text-sm text-gray-600'>
-                                            ₦{ticket.price.toLocaleString()} each
+                                            ₦{(ticket.discountedPrice ?? ticket.price).toLocaleString()} each
                                         </span>
                                         <span className='text-base font-semibold text-gray-900'>
-                                            ₦{(ticket.price * ticket.quantity).toLocaleString()}
+                                            ₦{(((ticket.discountedPrice ?? ticket.price) || 0) * ticket.quantity).toLocaleString()}
                                         </span>
                                     </div>
                                 </div>
@@ -298,6 +377,41 @@ export default function TicketBooking() {
                             </div>
                         ) : (
                             <>
+                                        {/* Discount Input (render above ticket list) */}
+                                        <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                                                <div className="flex-1">
+                                                    <label className='block text-sm font-semibold text-gray-700 mb-2'>Have a discount code?</label>
+                                                    <div className="flex gap-2">
+                                                        <input
+                                                            type='text'
+                                                            value={discountCodeInput}
+                                                            onChange={(e) => setDiscountCodeInput(e.target.value)}
+                                                            placeholder='Enter discount code'
+                                                            className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black outline-none text-base'
+                                                        />
+                                                        {!appliedDiscount ? (
+                                                            <button
+                                                                onClick={applyDiscount}
+                                                                disabled={discountLoading}
+                                                                className='px-4 py-3 bg-black text-white rounded-lg font-medium'
+                                                            >
+                                                                {discountLoading ? 'Checking...' : 'Apply'}
+                                                            </button>
+                                                        ) : (
+                                                            <button
+                                                                onClick={removeDiscount}
+                                                                className='px-4 py-3 bg-red-600 text-white rounded-lg font-medium'
+                                                            >
+                                                                Remove
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                    {discountError && <p className='mt-2 text-sm text-red-600'>{discountError}</p>}
+                                                    {appliedDiscount && <p className='mt-2 text-sm text-green-700'>Applied: {appliedDiscount.code} — {appliedDiscount.percentage}% off until {new Date(appliedDiscount.endDate).toLocaleString()}</p>}
+                                                </div>
+                                            </div>
+                                        </div>
                                 {ticketQty > 0 && (
                                     <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                                         <div className="flex items-center gap-2">
@@ -388,9 +502,24 @@ export default function TicketBooking() {
 
                                                         <div className="text-center sm:text-right">
                                                             <div className="flex flex-col items-center sm:items-end">
-                                                                <p className='text-xl sm:text-2xl font-bold text-gray-900'>
-                                                                    ₦{ticket.price.toLocaleString()}
-                                                                </p>
+                                                                <div className='flex flex-col items-center sm:items-end'>
+                                                                    {appliedDiscount ? (
+                                                                        <>
+                                                                            <p className='text-sm text-gray-500 line-through'>₦{ticket.price.toLocaleString()}</p>
+                                                                            <p className='text-xl sm:text-2xl font-bold text-gray-900'>₦{(Math.round(ticket.price * (1 - (appliedDiscount.percentage || 0) / 100))).toLocaleString()}</p>
+                                                                        </>
+                                                                    ) : (
+                                                                        <p className='text-xl sm:text-2xl font-bold text-gray-900'>₦{ticket.price.toLocaleString()}</p>
+                                                                    )}
+
+                                                                    {/* Discount badge inside ticket box */}
+                                                                    {appliedDiscount && (
+                                                                        <div className='mt-2 inline-flex items-center gap-2 bg-red-600 text-white px-2 py-1 rounded-md text-xs font-semibold'>
+                                                                            <span>{appliedDiscount.percentage}% OFF</span>
+                                                                            <span className='text-xs opacity-80'>ends {new Date(appliedDiscount.endDate).toLocaleDateString()}</span>
+                                                                        </div>
+                                                                    )}
+                                                                </div>
                                                                 {ticket.availableQuantity && (
                                                                     <span className="text-sm text-gray-500 mt-1">
                                                                         {ticket.availableQuantity} available
@@ -430,7 +559,7 @@ export default function TicketBooking() {
                                                         {quantity > 0 && (
                                                             <div className="text-right">
                                                                 <span className="text-base sm:text-lg font-semibold text-gray-900">
-                                                                    ₦{(ticket.price * quantity).toLocaleString()}
+                                                                    ₦{(((appliedDiscount ? Math.round(ticket.price * (1 - (appliedDiscount.percentage || 0) / 100)) : ticket.price) || 0) * quantity).toLocaleString()}
                                                                 </span>
                                                             </div>
                                                         )}
@@ -644,7 +773,7 @@ export default function TicketBooking() {
 
                             <button
                                 onClick={handleProceed}
-                                className='w-full cursor-pointer bg-black text-white hover:text-black sm:w-auto px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium mb-4 sm:mb-0 touch-manipulation'
+                                className='w-full cursor-pointer bg-black text-white hover:text-black sm:w-auto px-6 py-3 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors font-medium mb-4 sm:mb-0 touch-manipulation'
                             >
                                 Proceed to Payment
                             </button>
@@ -748,7 +877,7 @@ export default function TicketBooking() {
 
             <div className="flex flex-col lg:flex-row">
                 {/* Desktop Sidebar */}
-                <div className="hidden lg:block w-1/3 bg-white border-r border-gray-200 px-8 py-12 h-screen flex flex-col justify-between fixed top-0 left-0 overflow-y-auto">
+                <div className="hidden lg:flex w-1/3 bg-white border-r border-gray-200 px-8 py-12 h-screen lg:flex-col justify-between fixed top-0 left-0 overflow-y-auto">
                     <div>
                         <div className="text-center mb-8">
                             <h3 className='text-2xl font-bold text-gray-900 mb-2'>
@@ -760,27 +889,30 @@ export default function TicketBooking() {
                         </div>
 
                         <div className='space-y-4'>
-                            {getSelectedTicketsDisplay().length > 0 ? (
-                                getSelectedTicketsDisplay().map((ticket) => (
-                                    <div key={ticket.id} className='bg-gray-50 p-4 rounded-lg'>
-                                        <div className='flex justify-between items-start mb-2'>
-                                            <h4 className='font-semibold text-gray-900 text-sm leading-tight'>
-                                                {ticket.name}
-                                            </h4>
-                                            <span className='text-xs bg-gray-200 px-2 py-1 rounded-full font-medium'>
-                                                ×{ticket.quantity}
-                                            </span>
+                                    {getSelectedTicketsDisplay().length > 0 ? (
+                                getSelectedTicketsDisplay().map((ticket) => {
+                                    const each = ticket.discountedPrice ?? ticket.price
+                                    return (
+                                        <div key={ticket.id} className='bg-gray-50 p-4 rounded-lg'>
+                                            <div className='flex justify-between items-start mb-2'>
+                                                <h4 className='font-semibold text-gray-900 text-sm leading-tight'>
+                                                    {ticket.name}
+                                                </h4>
+                                                <span className='text-xs bg-gray-200 px-2 py-1 rounded-full font-medium'>
+                                                    ×{ticket.quantity}
+                                                </span>
+                                            </div>
+                                            <div className='flex justify-between items-center'>
+                                                <span className='text-sm text-gray-600'>
+                                                    ₦{each.toLocaleString()} each
+                                                </span>
+                                                <span className='text-base font-semibold text-gray-900'>
+                                                    ₦{(each * ticket.quantity).toLocaleString()}
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div className='flex justify-between items-center'>
-                                            <span className='text-sm text-gray-600'>
-                                                ₦{ticket.price.toLocaleString()} each
-                                            </span>
-                                            <span className='text-base font-semibold text-gray-900'>
-                                                ₦{(ticket.price * ticket.quantity).toLocaleString()}
-                                            </span>
-                                        </div>
-                                    </div>
-                                ))
+                                    )
+                                })
                             ) : (
                                 <div className='text-center py-8 text-gray-500'>
                                     <Info size={32} className="mx-auto mb-3 text-gray-300" />

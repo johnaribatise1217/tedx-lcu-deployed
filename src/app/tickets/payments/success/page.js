@@ -199,7 +199,14 @@ const SuccessPage = () => {
                         {bookingData.ticketName || 'Loading'}
                       </p>
                     </div>
-
+                    {bookingData.discount && 
+                      <div className="flex-1">
+                        <span className="text-gray-500 font-medium text-xs sm:text-sm">Discount Details:</span>
+                        <p className="font-bold text-gray-800 text-base sm:text-lg">
+                          {bookingData.discountPercentage || 'Loading'} %
+                        </p>
+                      </div>
+                    }
                     <div className="text-left sm:text-right">
                       <span className="text-gray-500 font-medium text-xs sm:text-sm">Quantity:</span>
                       <p className="font-bold text-xl sm:text-2xl text-red-600">

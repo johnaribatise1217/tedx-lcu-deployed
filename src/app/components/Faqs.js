@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Outfit } from "next/font/google";
-import { Plus, Minus, HelpCircle } from "lucide-react";
+import { Plus, Minus, HelpCircle, Phone, Mail } from "lucide-react";
+import Link from "next/link";
 
 const outfit = Outfit({
     subsets: ["latin"],
@@ -21,19 +22,19 @@ const faqData = [
         id: 2,
         question: "When and where is TEDxLeadCityUniversity taking place?",
         answer:
-            "TEDxLeadCityUniversity will take place on November 20th, 2025, from 9:00 AM to 5:00 PM at the Conference Centre, Lead City University. The venue is easily accessible and has ample parking facilities.",
+            "TEDxLeadCityUniversity will take place on Friday, November 7th, 2025, from 9:00 AM to 4:00 PM at the International Conference Centre, Lead City University, Ibadan, Oyo state, Nigeria. The venue is easily accessible and comfortable for all attendees.",
     },
     {
         id: 3,
         question: "How much do tickets cost and what's included?",
         answer:
-            "We offer three ticket tiers: Student Pass (₦2,500), General Admission (₦5,000), and VIP Experience (₦12,000). All tickets include access to talks, networking opportunities, and digital certificates. Higher tiers include additional perks like premium seating, meals, and speaker meet-and-greets.",
+            "We offer three ticket tiers: Core Tickets (₦5,000), Circle Ticket (₦10,000), and Pulse Ticket (₦15,000). All tickets include access to talks, networking opportunities, and digital certificates. Higher tiers include additional perks like Priority check-in, meals, and speaker meet-and-greets.",
     },
     {
         id: 4,
         question: "Are there student discounts available?",
         answer:
-            "Yes! We offer special student pricing with our Student Pass at ₦2,500 (regular price ₦3,500). You'll need to present a valid student ID at the event entrance. This makes the transformative TEDx experience accessible to young minds.",
+            "If you're a member of a student community on campus, there's a chance that your association executives have Insider codes. They're limited in number, but if you get on first, use it! Good luck.",
     },
 ];
 
@@ -147,17 +148,10 @@ export default function FAQ() {
                     <p className={`${outfit.className} text-sm sm:text-base text-gray-600 mb-6`}>
                         {`Can't find what you're looking for? Our team is here to help!`}
                     </p>
-                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
-                        <button
-                            className={`${outfit.className} w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white px-6 sm:px-8 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl`}
-                        >
-                            Contact Us
-                        </button>
-                        <button
-                            className={`${outfit.className} w-full sm:w-auto border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white px-6 sm:px-8 py-3 rounded-lg font-semibold transition-all duration-300`}
-                        >
-                            Email Support
-                        </button>
+                    <div className="flex flex-col gap-5 pt-5 justify-center items-center">
+                        <h3 className="text-red-600 font-semibold md:text-2xl text-[16px] flex items-center gap-3"><Phone className="md:flex hidden" /> 08085614651, +234 812 541 8541, +234 703 434 6739</h3>
+                        <h3 className="text-black font-semibold md:text-2xl text-[16px] flex items-center gap-3"><Mail className="md:flex hidden" /> tedxleadcityuniversity@gmail.com</h3>
+
                     </div>
                 </motion.div>
             </div>

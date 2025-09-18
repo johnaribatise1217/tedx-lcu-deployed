@@ -14,89 +14,90 @@ const outfit = Outfit({
 const speakers = [
     {
         id: 1,
-        name: "Dr. Amina Hassan",
-        title: "AI Ethics Researcher",
-        company: "Stanford University",
-        topic: "The Future of Human-AI Collaboration",
-        bio: "Leading researcher in artificial intelligence ethics with over 10 years of experience in machine learning and human-computer interaction.",
-        image: "https://res.cloudinary.com/djoxzzlue/image/upload/v1755884367/IMG_2356-2_io6oat.jpg", // Replace with actual image
+        name: "COMING SOON",
+        title: "coming soon",
+        company: "coming soon",
+        topic: "UNREVEALED",
+        bio: "",
+        image: "/silhouette.png",
         social: {
-            linkedin: "https://linkedin.com/in/aminahassan",
-            twitter: "https://twitter.com/aminahassan",
-            website: "https://aminahassan.com"
+            linkedin: "",
+            twitter: "",
+            website: ""
         }
     },
     {
         id: 2,
-        name: "Michael Chen",
-        title: "Social Entrepreneur",
-        company: "GreenTech Solutions",
-        topic: "Building Sustainable Communities",
-        bio: "Award-winning social entrepreneur who has impacted over 100,000 lives through sustainable technology solutions across Africa.",
-        image: "https://res.cloudinary.com/djoxzzlue/image/upload/v1755884375/IMG_2384_jwfu0w.jpg", // Replace with actual image
+        name: "COMING SOON",
+        title: "coming soon",
+        company: "coming soon",
+        topic: "UNREVEALED",
+        bio: "",
+        image: "/male.png",
         social: {
-            linkedin: "https://linkedin.com/in/michaelchen",
-            twitter: "https://twitter.com/michaelchen",
-            website: "https://greentech-solutions.com"
+            linkedin: "",
+            twitter: "",
+            website: ""
         }
     },
     {
         id: 3,
-        name: "Prof. Sarah Williams",
-        title: "Neuroscientist",
-        company: "Oxford University",
-        topic: "Rewiring Your Brain for Success",
-        bio: "Internationally acclaimed neuroscientist specializing in neuroplasticity and cognitive enhancement techniques.",
-        image: "https://res.cloudinary.com/djoxzzlue/image/upload/v1755884377/IMG_2397_kwj5go.jpg", // Replace with actual image
+        name: "COMING SOON",
+        title: "coming soon",
+        company: "coming soon",
+        topic: "UNREVEALED",
+        bio: "",
+        image: "/silhouette.png",
         social: {
-            linkedin: "https://linkedin.com/in/sarahwilliams",
-            twitter: "https://twitter.com/sarahwilliams",
-            website: "https://sarahwilliams.research.ox.ac.uk"
+            linkedin: "",
+            twitter: "",
+            website: ""
         }
     },
     {
         id: 4,
-        name: "David Okafor",
-        title: "Creative Director",
-        company: "Nollywood Studios",
-        topic: "Storytelling in the Digital Age",
-        bio: "Visionary creative director who has revolutionized African storytelling through innovative digital media and virtual reality experiences.",
-        image: "https://res.cloudinary.com/djoxzzlue/image/upload/v1755884381/IMG_2382_phcmla.jpg", // Replace with actual image
+        name: "COMING SOON",
+        title: "coming soon",
+        company: "coming soon",
+        topic: "UNREVEALED",
+        bio: "",
+        image: "/male.png",
         social: {
-            linkedin: "https://linkedin.com/in/davidokafor",
-            twitter: "https://twitter.com/davidokafor",
-            website: "https://davidokafor.studio"
+            linkedin: "",
+            twitter: "",
+            website: ""
         }
     },
     {
         id: 5,
-        name: "Dr. Lisa Rodriguez",
-        title: "Climate Scientist",
-        company: "NASA Climate Institute",
-        topic: "Climate Action: From Ideas to Impact",
-        bio: "Leading climate scientist at NASA with groundbreaking research on climate adaptation strategies for developing nations.",
-        image: "https://res.cloudinary.com/djoxzzlue/image/upload/v1755884297/IMG_2585_1_dqa6wn.jpg", // Replace with actual image
+        name: "COMING SOON",
+        title: "coming soon",
+        company: "coming soon",
+        topic: "UNREVEALED",
+        bio: "",
+        image: "/silhouette.png",
         social: {
-            linkedin: "https://linkedin.com/in/lisarodriguez",
-            twitter: "https://twitter.com/lisarodriguez",
-            website: "https://nasa.gov/climate/lisa-rodriguez"
+            linkedin: "",
+            twitter: "",
+            website: ""
         }
     },
     {
         id: 6,
-        name: "James Thompson",
-        title: "Tech Innovator",
-        company: "Future Labs",
-        topic: "Innovation Without Boundaries",
-        bio: "Serial entrepreneur and tech innovator who has launched 5 successful startups focused on emerging market solutions.",
-        image: "https://res.cloudinary.com/djoxzzlue/image/upload/v1755884375/IMG_2384_jwfu0w.jpg", // Replace with actual image
+        name: "COMING SOON",
+        title: "coming soon",
+        company: "coming soon",
+        topic: "UNREVEALED",
+        bio: "",
+        image: "/male.png",
         social: {
-            linkedin: "https://linkedin.com/in/jamesthompson",
-            twitter: "https://twitter.com/jamesthompson",
-            website: "https://future-labs.io"
+            linkedin: "",
+            twitter: "",
+            website: ""
         }
     }
 ];
+
 
 export default function Speakers() {
     return (

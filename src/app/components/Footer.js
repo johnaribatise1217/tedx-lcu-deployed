@@ -74,7 +74,7 @@ export default function Footer() {
                         >
                             <div className="mb-6">
                                 <Image
-                                    src="/Tedx-white-logo.png"
+                                    src="https://res.cloudinary.com/djoxzzlue/image/upload/v1755806113/Tedx-white-logo_wkzr1i.png"
                                     alt="TEDx Logo"
                                     width={200}
                                     height={80}

@@ -16,7 +16,7 @@ export const BlogService = {
     },
 
     // Get a specific blog post by ID
-    getBlogById: async (id, token) => {
+    getBlogById: async (id) => {
         try {
             const response = await apiClient.get(`/blogs/${id}`);
             if (response.data.success) {

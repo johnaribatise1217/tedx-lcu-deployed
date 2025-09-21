@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Calendar, Clock, User } from 'lucide-react';
-import { blogPosts } from 'lib/blogData'; // Import blog data from separate file
 import { toast } from 'sonner';
 import { BlogService } from 'service/BlogService';
 
@@ -39,6 +38,9 @@ export default function Blog() {
         fetchBlogPost();
     }, [])
 
+    if (!loading && (!blogs || blogs.length === 0)) {
+        return null;
+    }
 
     return (
 

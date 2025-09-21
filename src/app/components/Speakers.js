@@ -3,9 +3,9 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Outfit } from "next/font/google";
-import { Linkedin, Twitter, Globe } from "lucide-react";
+import { Linkedin, Twitter, Instagram, Globe } from "lucide-react";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { SpeakerService } from "service/SpeakerService";
 
 const outfit = Outfit({
@@ -14,102 +14,95 @@ const outfit = Outfit({
 });
 
 
-const speakers = [
-    {
-        id: 1,
-        name: "COMING SOON",
-        title: "coming soon",
-        company: "coming soon",
-        topic: "UNREVEALED",
-        bio: "",
-        image: "/silhouette.png",
-        social: {
-            linkedin: "",
-            twitter: "",
-            website: ""
-        }
-    },
-    {
-        id: 2,
-        name: "COMING SOON",
-        title: "coming soon",
-        company: "coming soon",
-        topic: "UNREVEALED",
-        bio: "",
-        image: "/male.png",
-        social: {
-            linkedin: "",
-            twitter: "",
-            website: ""
-        }
-    },
-    {
-        id: 3,
-        name: "COMING SOON",
-        title: "coming soon",
-        company: "coming soon",
-        topic: "UNREVEALED",
-        bio: "",
-        image: "/silhouette.png",
-        social: {
-            linkedin: "",
-            twitter: "",
-            website: ""
-        }
-    },
-    {
-        id: 4,
-        name: "COMING SOON",
-        title: "coming soon",
-        company: "coming soon",
-        topic: "UNREVEALED",
-        bio: "",
-        image: "/male.png",
-        social: {
-            linkedin: "",
-            twitter: "",
-            website: ""
-        }
-    },
-    {
-        id: 5,
-        name: "COMING SOON",
-        title: "coming soon",
-        company: "coming soon",
-        topic: "UNREVEALED",
-        bio: "",
-        image: "/silhouette.png",
-        social: {
-            linkedin: "",
-            twitter: "",
-            website: ""
-        }
-    },
-    {
-        id: 6,
-        name: "COMING SOON",
-        title: "coming soon",
-        company: "coming soon",
-        topic: "UNREVEALED",
-        bio: "",
-        image: "/male.png",
-        social: {
-            linkedin: "",
-            twitter: "",
-            website: ""
-        }
-    }
-];
-
-
-const fetchSpeakers = async () => {
-    const response = await SpeakerService
-}
-
-
-
-
 export default function Speakers() {
+    const [speakers, setSpeakers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchSpeakers = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                const response = await SpeakerService.GetAllSpeakers();
+
+                if (response && Array.isArray(response) && response.length > 0) {
+                    setSpeakers(response);
+                } else {
+                    // Use placeholder speakers if no data
+                    setSpeakers(placeholderSpeakers);
+                }
+            } catch (error) {
+                console.error('Error fetching speakers:', error);
+                setError(error);
+                // Fallback to placeholder speakers on error
+                setSpeakers(placeholderSpeakers);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchSpeakers();
+    }, []);
+
+    // Helper function to get social link by name
+    const getSocialLink = (socialLinks, socialName) => {
+        if (!Array.isArray(socialLinks)) return '';
+        const link = socialLinks.find(link =>
+            link.socialName?.toLowerCase() === socialName.toLowerCase()
+        );
+        return link?.socialLink || '';
+    };
+
+    // Helper function to get social icon
+    const getSocialIcon = (socialName) => {
+        switch (socialName.toLowerCase()) {
+            case 'linkedin':
+                return <Linkedin className="w-4 h-4 sm:w-5 sm:h-5" />;
+            case 'twitter':
+                return <Twitter className="w-4 h-4 sm:w-5 sm:h-5" />;
+            case 'instagram':
+                return <Instagram className="w-4 h-4 sm:w-5 sm:h-5" />;
+            default:
+                return <Globe className="w-4 h-4 sm:w-5 sm:h-5" />;
+        }
+    };
+
+    if (loading) {
+        return (
+            <section id="speakers" className="py-12 px-4 sm:px-6 bg-gray-50">
+                <div className="max-w-6xl mx-auto text-center mb-12 sm:mb-16">
+                    <h2 className={`${outfit.className} text-2xl sm:text-3xl md:text-5xl font-semibold text-gray-900 mb-4 sm:mb-6`}>
+                        Featured Speakers
+                    </h2>
+                    <p className={`${outfit.className} text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed`}>
+                        Loading our amazing speakers...
+                    </p>
+                </div>
+                <div className="max-w-7xl mx-auto">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                        {[1, 2, 3].map((i) => (
+                            <div key={i} className="bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse">
+                                <div className="h-60 sm:h-72 md:h-80 bg-gray-300"></div>
+                                <div className="p-4 sm:p-6">
+                                    <div className="h-6 bg-gray-300 rounded mb-2"></div>
+                                    <div className="h-4 bg-gray-300 rounded mb-2"></div>
+                                    <div className="h-4 bg-gray-300 rounded mb-4"></div>
+                                    <div className="h-16 bg-gray-300 rounded"></div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
+    // Don't render anything if there are no speakers
+    if (!loading && (!speakers || speakers.length === 0)) {
+        return null;
+    }
+
     return (
         <section id="speakers" className="py-12 px-4 sm:px-6 bg-gray-50">
             {/* Header */}
@@ -156,83 +149,70 @@ export default function Speakers() {
                             <div className="relative h-60 sm:h-72 md:h-80 overflow-hidden">
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
                                 <Image
-                                    src={speaker.image}
-                                    alt={speaker.name}
+                                    src={speaker.speakerImage || `/silhouette.png`}
+                                    alt={speaker.fullName || 'Speaker'}
                                     fill
                                     className="object-cover group-hover:scale-110 transition-transform duration-700"
                                     onError={(e) => {
-                                        e.currentTarget.src = `https://ui-avatars.com/api/?name=${speaker.name}&size=400&background=ef4444&color=white&bold=true`;
+                                        e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(speaker.fullName || 'Speaker')}&size=400&background=ef4444&color=white&bold=true`;
                                     }}
                                 />
 
-                                {/* Topic Overlay */}
+                                {/* Topic Overlay - Hidden for now since topic is not in API */}
                                 <div className="absolute bottom-3 left-3 right-3 z-20">
-                                    <p
-                                        className={`${outfit.className} text-red-400 text-xs sm:text-sm font-medium mb-1`}
-                                    >
-                                        TOPIC
+                                    <p className={`${outfit.className} text-red-400 text-xs sm:text-sm font-medium mb-1`}>
+                                        SPEAKER
                                     </p>
-                                    <h4
-                                        className={`${outfit.className} text-white text-sm sm:text-base md:text-lg font-semibold leading-tight`}
-                                    >
-                                        {speaker.topic}
-                                    </h4>
                                 </div>
                             </div>
 
                             {/* Speaker Info */}
                             <div className="p-4 sm:p-6">
-                                <h3
-                                    className={`${outfit.className} text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-2`}
-                                >
-                                    {speaker.name}
+                                <h3 className={`${outfit.className} text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-2`}>
+                                    {speaker.fullName || 'Coming Soon'}
                                 </h3>
 
                                 <div className="mb-3 sm:mb-4">
-                                    <p
-                                        className={`${outfit.className} text-red-600 font-semibold text-sm sm:text-base`}
-                                    >
-                                        {speaker.title}
-                                    </p>
-                                    <p
-                                        className={`${outfit.className} text-gray-600 text-xs sm:text-sm`}
-                                    >
-                                        {speaker.company}
-                                    </p>
+                                    {speaker.title && (
+                                        <p className={`${outfit.className} text-red-600 font-semibold text-sm sm:text-base`}>
+                                            {speaker.title}
+                                        </p>
+                                    )}
+
                                 </div>
 
-                                <p
-                                    className={`${outfit.className} text-gray-700 text-xs sm:text-sm md:text-base leading-relaxed mb-4 sm:mb-6`}
-                                >
-                                    {speaker.bio}
+                                <p className={`${outfit.className} text-gray-700 text-xs sm:text-sm md:text-base leading-relaxed mb-4 sm:mb-6 line-clamp-3`}>
+                                    {speaker.bio || 'Stay tuned for more information about this amazing speaker!'}
                                 </p>
 
                                 {/* Social Links */}
                                 <div className="flex space-x-3 sm:space-x-4">
-                                    <a
-                                        href={speaker.social.linkedin}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="p-2 rounded-full bg-gray-100 hover:bg-red-600 text-gray-600 hover:text-white transition-all duration-300"
-                                    >
-                                        <Linkedin className="w-4 h-4 sm:w-5 sm:h-5" />
-                                    </a>
-                                    <a
-                                        href={speaker.social.twitter}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="p-2 rounded-full bg-gray-100 hover:bg-red-600 text-gray-600 hover:text-white transition-all duration-300"
-                                    >
-                                        <Twitter className="w-4 h-4 sm:w-5 sm:h-5" />
-                                    </a>
-                                    <a
-                                        href={speaker.social.website}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="p-2 rounded-full bg-gray-100 hover:bg-red-600 text-gray-600 hover:text-white transition-all duration-300"
-                                    >
-                                        <Globe className="w-4 h-4 sm:w-5 sm:h-5" />
-                                    </a>
+                                    {speaker.socialLinks && Array.isArray(speaker.socialLinks) && speaker.socialLinks.length > 0 ? (
+                                        speaker.socialLinks.map((social, idx) => (
+                                            social.socialLink && (
+                                                <a
+                                                    key={idx}
+                                                    href={social.socialLink}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="p-2 rounded-full bg-gray-100 hover:bg-red-600 text-gray-600 hover:text-white transition-all duration-300"
+                                                    title={social.socialName}
+                                                >
+                                                    {getSocialIcon(social.socialName)}
+                                                </a>
+                                            )
+                                        ))
+                                    ) : (
+                                        // Show placeholder social icons if no links available
+                                        <div className="flex space-x-3 opacity-50">
+                                            <div className="p-2 rounded-full bg-gray-100 text-gray-400">
+                                                <Linkedin className="w-4 h-4 sm:w-5 sm:h-5" />
+                                            </div>
+                                            <div className="p-2 rounded-full bg-gray-100 text-gray-400">
+                                                <Twitter className="w-4 h-4 sm:w-5 sm:h-5" />
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </motion.div>
@@ -248,15 +228,11 @@ export default function Speakers() {
                 viewport={{ once: true }}
                 className="text-center mt-12 sm:mt-16"
             >
-                <p
-                    className={`${outfit.className} text-gray-600 text-base sm:text-lg mb-4 sm:mb-6`}
-                >
+                <p className={`${outfit.className} text-gray-600 text-base sm:text-lg mb-4 sm:mb-6`}>
                     {`Don't miss the chance to experience these transformative talks`}
                 </p>
                 <Link href='/tickets'>
-                    <button
-                        className={`${outfit.className} cursor-pointer bg-red-600 hover:bg-red-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl`}
-                    >
+                    <button className={`${outfit.className} cursor-pointer bg-red-600 hover:bg-red-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl`}>
                         Reserve Your Seat
                     </button>
                 </Link>

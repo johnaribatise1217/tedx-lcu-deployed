@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Calendar, Clock, User } from 'lucide-react';
-import { blogPosts } from 'lib/blogData'; // Import blog data from separate file
 import { toast } from 'sonner';
 import { BlogService } from 'service/BlogService';
 
@@ -39,8 +38,12 @@ export default function Blog() {
         fetchBlogPost();
     }, [])
 
+    if (!loading && (!blogs || blogs.length === 0)) {
+        return null;
+    }
 
     return (
+
         <div id="blog" className="mt-20">
             <motion.div
                 initial={{ opacity: 0, y: 40 }}
@@ -61,7 +64,7 @@ export default function Blog() {
                     <p
                         className={`${outfit.className} text-base sm:text-lg md:text-xl text-gray-700 tracking-wider leading-relaxed lg:w-1/2 w-full mx-auto text-center`}
                     >
-                        Follow the rhythm of our thoughts before and after the change makers hit the red stage. Stay updated with the TEDxFortGarry movement!
+                        Follow the rhythm of our thoughts before and after the change makers hit the red stage. Stay updated with the TEDxLeadCityUniversity movement!
                     </p>
 
                     {/* Cards */}

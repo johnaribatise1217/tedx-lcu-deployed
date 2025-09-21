@@ -13,15 +13,15 @@ const outfit = Outfit({
 });
 
 const images = [
+    "https://res.cloudinary.com/djoxzzlue/image/upload/v1755885349/IMG_2190_wq1wjb.jpg",
+    "https://res.cloudinary.com/djoxzzlue/image/upload/v1755885344/IMG_2216_zh0mhh.jpg",
+    "https://res.cloudinary.com/djoxzzlue/image/upload/v1755885344/IMG_2170_tznlq1.jpg",
     "https://res.cloudinary.com/djoxzzlue/image/upload/v1755884381/IMG_2382_phcmla.jpg",
-    "https://res.cloudinary.com/djoxzzlue/image/upload/v1755884382/IMG_2377_tuyv6f.jpg",
-    "https://res.cloudinary.com/djoxzzlue/image/upload/v1755884354/IMG_2453_hpednz.jpg",
-    "https://res.cloudinary.com/djoxzzlue/image/upload/v1755884346/IMG_2276_zdicww.jpg",
-    "https://res.cloudinary.com/djoxzzlue/image/upload/v1755884304/IMG_2171_lzpd9b.jpg",
-    "https://res.cloudinary.com/djoxzzlue/image/upload/v1755814957/Ted-9_aoba5m.jpg",
-    "https://res.cloudinary.com/djoxzzlue/image/upload/v1755884377/IMG_2278_wr7y4c.jpg",
-    "https://res.cloudinary.com/djoxzzlue/image/upload/v1755884347/IMG_2241_d9eg0c.jpg",
     "https://res.cloudinary.com/djoxzzlue/image/upload/v1755884318/IMG_2441_ypxhpq.jpg",
+    "https://res.cloudinary.com/djoxzzlue/image/upload/v1755884311/IMG_2249_zr9bib.jpg",
+    "https://res.cloudinary.com/djoxzzlue/image/upload/v1755814957/Ted-7_iel0l7.jpg",
+    "https://res.cloudinary.com/djoxzzlue/image/upload/v1755805800/IMG_2455_yh9zgq.jpg",
+    "https://res.cloudinary.com/djoxzzlue/image/upload/v1755806087/IMG_2174_xnku5f.jpg",
 ];
 
 export default function Gallery() {

@@ -5,11 +5,14 @@ import { motion } from "framer-motion";
 import { Outfit } from "next/font/google";
 import { Linkedin, Twitter, Globe } from "lucide-react";
 import Link from "next/link";
+import { useEffect } from "react";
+import { SpeakerService } from "service/SpeakerService";
 
 const outfit = Outfit({
     subsets: ['latin'],
     weight: ['300', '400', '500', '600', '700']
 });
+
 
 const speakers = [
     {
@@ -97,6 +100,13 @@ const speakers = [
         }
     }
 ];
+
+
+const fetchSpeakers = async () => {
+    const response = await SpeakerService
+}
+
+
 
 
 export default function Speakers() {

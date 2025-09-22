@@ -100,7 +100,7 @@ export default function Blog() {
                                             >
                                                 {blog.title}
                                             </h2>
-
+                                            
                                             <p
                                                 className={`${outfit.className} text-sm sm:text-base md:text-[15px] text-gray-700 tracking-wider leading-relaxed mb-4 text-start`}
                                             >

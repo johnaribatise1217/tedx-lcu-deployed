@@ -89,6 +89,23 @@ const SuccessPage = () => {
       {bookingData ? (
         <>
           {/* Ticket Design - This will be in the PDF */}
+          <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full px-4 sm:px-0">
+            <button
+              onClick={() => router.push("/")}
+              className="bg-gray-500 hover:bg-gray-600 w-full sm:w-auto flex items-center justify-center gap-2 text-white font-medium py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 cursor-pointer text-sm sm:text-base"
+            >
+              <ArrowLeft size={18} className="sm:w-5 sm:h-5" />
+              Go to Homepage
+            </button>
+
+            <button
+              onClick={handleDownloadPdf}
+              className="bg-red-500 hover:bg-red-600 cursor-pointer w-full sm:w-auto flex items-center justify-center gap-2 text-white font-medium py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 text-sm sm:text-base"
+            >
+              <Download size={18} className="sm:w-5 sm:h-5" />
+              Download Ticket
+            </button>
+          </div>
           <div
             ref={printRef}
             className="bg-white rounded-xl sm:rounded-2xl shadow-2xl max-w-2xl w-full mx-2 sm:mx-0 overflow-hidden relative"
@@ -270,7 +287,7 @@ const SuccessPage = () => {
           </div>
 
           {/* Action Buttons - Outside of printable area */}
-          <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full px-4 sm:px-0">
+          {/* <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full px-4 sm:px-0">
             <button
               onClick={() => router.push("/")}
               className="bg-gray-500 hover:bg-gray-600 w-full sm:w-auto flex items-center justify-center gap-2 text-white font-medium py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 cursor-pointer text-sm sm:text-base"
@@ -286,7 +303,7 @@ const SuccessPage = () => {
               <Download size={18} className="sm:w-5 sm:h-5" />
               Download Ticket
             </button>
-          </div>
+          </div> */}
         </>
       ) : (
         <div className="bg-white p-6 sm:p-8 rounded-xl sm:rounded-2xl shadow-lg text-center mx-4 sm:mx-0">

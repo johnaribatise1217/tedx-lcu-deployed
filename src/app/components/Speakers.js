@@ -28,15 +28,10 @@ export default function Speakers() {
 
                 if (response && Array.isArray(response) && response.length > 0) {
                     setSpeakers(response);
-                } else {
-                    // Use placeholder speakers if no data
-                    setSpeakers(placeholderSpeakers);
                 }
             } catch (error) {
                 console.error('Error fetching speakers:', error);
                 setError(error);
-                // Fallback to placeholder speakers on error
-                setSpeakers(placeholderSpeakers);
             } finally {
                 setLoading(false);
             }
@@ -203,7 +198,6 @@ export default function Speakers() {
                                             )
                                         ))
                                     ) : (
-                                        // Show placeholder social icons if no links available
                                         <div className="flex space-x-3 opacity-50">
                                             <div className="p-2 rounded-full bg-gray-100 text-gray-400">
                                                 <Linkedin className="w-4 h-4 sm:w-5 sm:h-5" />

@@ -4,6 +4,7 @@ import { ChevronRight, Check, AlertCircle, Info, X } from 'lucide-react'
 import { TicketsService } from 'service/TicketApi';
 import { apiClient } from 'service/apiClient';
 import { successNotify, failureNotify } from '@/app/tickets/utils/toaster';
+import Image from 'next/image';
 // import { PaymentService } from 'service/PaymentApi';
 
 export default function TicketBooking() {
@@ -570,7 +571,58 @@ export default function TicketBooking() {
                                     })}
                                 </div>
 
+                                {/* Merchandise Section */}
+                                <div className="mt-8 p-6 bg-gradient-to-r from-red-50 to-black/5 border border-gray-200 rounded-xl">
+                                    <div className="text-center mb-6">
+                                        <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
+                                            TEDxLeadCityUniversity Merch
+                                        </h3>
+                                        <p className="text-gray-600 text-sm sm:text-base">
+                                            Get exclusive TEDx branded items to commemorate the event
+                                        </p>
+                                    </div>
 
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 w-[70%] mx-auto gap-4 mb-6">
+                                        <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+                                            <div className="aspect-square bg-gray-100 rounded-lg mb-3 flex items-center justify-center">
+                                                <Image
+                                                    src="https://res.cloudinary.com/djoxzzlue/image/upload/v1758505670/merch_rearq2.jpg"
+                                                    alt="TEDx T-Shirt" width={100} height={100}
+                                                    className="w-full h-full object-cover rounded-lg"
+                                                />
+                                            </div>
+                                            <h4 className="font-semibold text-gray-900 text-sm">TEDx Black T-Shirt</h4>
+                                            <p className="text-xs text-gray-600 mt-1">Premium cotton blend</p>
+                                        </div>
+
+                                        <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+                                            <div className="aspect-square bg-gray-100 rounded-lg mb-3 flex items-center justify-center">
+                                                <Image
+                                                    src="https://res.cloudinary.com/djoxzzlue/image/upload/v1758505670/merch_white_o3euwv.jpg"
+                                                    alt="TEDx Tote Bag" width={100} height={100}
+                                                    className="w-full h-full object-cover rounded-lg"
+                                                />
+                                            </div>
+                                            <h4 className="font-semibold text-gray-900 text-sm">TEDx White T-shirt</h4>
+                                            <p className="text-xs text-gray-600 mt-1">Premium cotton blend</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="text-center">
+                                        <button
+                                            onClick={() => window.open('https://www.tachpae.com/events/tedx-leadcity-the-collective-2025', '_blank')}
+                                            className="inline-flex cursor-pointer items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200 shadow-md hover:shadow-lg"
+                                        >
+                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                            </svg>
+                                            Buy Merchandise
+                                        </button>
+                                        <p className="text-xs text-gray-500 mt-2">
+                                            Available for pickup at the event or Delivery
+                                        </p>
+                                    </div>
+                                </div>
                             </>
                         )}
                     </div>

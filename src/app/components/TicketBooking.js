@@ -4,6 +4,7 @@ import { ChevronRight, Check, AlertCircle, Info, X } from 'lucide-react'
 import { TicketsService } from 'service/TicketApi';
 import { apiClient } from 'service/apiClient';
 import { successNotify, failureNotify } from '@/app/tickets/utils/toaster';
+import Image from 'next/image';
 // import { PaymentService } from 'service/PaymentApi';
 
 export default function TicketBooking() {
@@ -237,7 +238,7 @@ export default function TicketBooking() {
                 email: formData.email,
                 ticketId: Object.keys(selectedTickets)[0],
                 quantity: ticketQty,
-                discountCode : saved.toString()
+                discountCode: saved
             }
 
             try {
@@ -377,41 +378,41 @@ export default function TicketBooking() {
                             </div>
                         ) : (
                             <>
-                                        {/* Discount Input (render above ticket list) */}
-                                        <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                                            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                                                <div className="flex-1">
-                                                    <label className='block text-sm font-semibold text-gray-700 mb-2'>Have a discount code?</label>
-                                                    <div className="flex gap-2">
-                                                        <input
-                                                            type='text'
-                                                            value={discountCodeInput}
-                                                            onChange={(e) => setDiscountCodeInput(e.target.value)}
-                                                            placeholder='Enter discount code'
-                                                            className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black outline-none text-base'
-                                                        />
-                                                        {!appliedDiscount ? (
-                                                            <button
-                                                                onClick={applyDiscount}
-                                                                disabled={discountLoading}
-                                                                className='px-4 py-3 bg-black text-white rounded-lg font-medium'
-                                                            >
-                                                                {discountLoading ? 'Checking...' : 'Apply'}
-                                                            </button>
-                                                        ) : (
-                                                            <button
-                                                                onClick={removeDiscount}
-                                                                className='px-4 py-3 bg-red-600 text-white rounded-lg font-medium'
-                                                            >
-                                                                Remove
-                                                            </button>
-                                                        )}
-                                                    </div>
-                                                    {discountError && <p className='mt-2 text-sm text-red-600'>{discountError}</p>}
-                                                    {appliedDiscount && <p className='mt-2 text-sm text-green-700'>Applied: {appliedDiscount.code} — {appliedDiscount.percentage}% off until {new Date(appliedDiscount.endDate).toLocaleString()}</p>}
-                                                </div>
+                                {/* Discount Input (render above ticket list) */}
+                                <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                    <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                                        <div className="flex-1">
+                                            <label className='block text-sm font-semibold text-gray-700 mb-2'>Have a discount code?</label>
+                                            <div className="flex gap-2">
+                                                <input
+                                                    type='text'
+                                                    value={discountCodeInput}
+                                                    onChange={(e) => setDiscountCodeInput(e.target.value)}
+                                                    placeholder='Enter discount code'
+                                                    className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black outline-none text-base'
+                                                />
+                                                {!appliedDiscount ? (
+                                                    <button
+                                                        onClick={applyDiscount}
+                                                        disabled={discountLoading}
+                                                        className='px-4 py-3 bg-black text-white rounded-lg font-medium'
+                                                    >
+                                                        {discountLoading ? 'Checking...' : 'Apply'}
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        onClick={removeDiscount}
+                                                        className='px-4 py-3 bg-red-600 text-white rounded-lg font-medium'
+                                                    >
+                                                        Remove
+                                                    </button>
+                                                )}
                                             </div>
+                                            {discountError && <p className='mt-2 text-sm text-red-600'>{discountError}</p>}
+                                            {appliedDiscount && <p className='mt-2 text-sm text-green-700'>Applied: {appliedDiscount.code} — {appliedDiscount.percentage}% off until {new Date(appliedDiscount.endDate).toLocaleString()}</p>}
                                         </div>
+                                    </div>
+                                </div>
                                 {ticketQty > 0 && (
                                     <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                                         <div className="flex items-center gap-2">
@@ -570,7 +571,80 @@ export default function TicketBooking() {
                                     })}
                                 </div>
 
+                                {/* Merchandise Section */}
+                                <div className="mt-8 p-6 bg-gradient-to-r from-red-50 to-black/5 border border-gray-200 rounded-xl">
+                                    <div className="text-center mb-6">
+                                        <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
+                                            TEDxLeadCityUniversity Merch
+                                        </h3>
+                                        <p className="text-gray-600 text-sm sm:text-base">
+                                            Get exclusive TEDx branded items to commemorate the event
+                                        </p>
+                                    </div>
 
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 dm:w-[70%] w-full mx-auto gap-4 mb-6">
+                                        <div className="bg-white rounded-lg sm:p-4 p-1 shadow-sm border border-gray-100">
+                                            <div className="aspect-square bg-gray-100 rounded-lg mb-3 relative">
+                                                <Image
+                                                    src="https://res.cloudinary.com/djoxzzlue/image/upload/v1758534513/TEDx_T-shirt_White_qcjrs0.png"
+                                                    alt="TEDx T-Shirt"
+                                                    fill
+                                                    className="object-cover rounded-lg"
+                                                    sizes="(max-width: 768px) 100vw, 400px"
+                                                />
+                                            </div>
+
+                                            <h4 className="font-semibold text-gray-900 text-sm">TEDx Black T-Shirt</h4>
+                                            <p className="text-xs text-gray-600 mt-1">Premium cotton blend</p>
+                                        </div>
+
+                                        <div className="bg-white rounded-lg sm:p-4 p-1 shadow-sm border border-gray-100">
+                                            <div className="aspect-square bg-gray-100 rounded-lg mb-3 relative">
+                                                <Image
+                                                    src="https://res.cloudinary.com/djoxzzlue/image/upload/v1758534513/TEDx_T-shirt_black_wp8k1j.png"
+                                                    alt="TEDx T-Shirt"
+                                                    fill
+                                                    className="object-cover rounded-lg"
+                                                    sizes="(max-width: 768px) 100vw, 400px"
+                                                />
+                                            </div>
+
+                                            <h4 className="font-semibold text-gray-900 text-sm">TEDx White T-shirt</h4>
+                                            <p className="text-xs text-gray-600 mt-1">Premium cotton blend</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="text-center">
+                                        <button
+                                            onClick={() =>
+                                                window.open(
+                                                    "https://www.tachpae.com/events/tedx-leadcity-the-collective-2025",
+                                                    "_blank"
+                                                )
+                                            }
+                                            className="inline-flex cursor-pointer items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200 shadow-md hover:shadow-lg whitespace-nowrap"
+                                        >
+                                            <svg
+                                                className="w-5 h-5"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                                                />
+                                            </svg>
+                                            Buy Merchandise
+                                        </button>
+
+                                        <p className="text-xs text-gray-500 mt-2">
+                                            Available for pickup at the event or Delivery
+                                        </p>
+                                    </div>
+                                </div>
                             </>
                         )}
                     </div>
@@ -783,8 +857,9 @@ export default function TicketBooking() {
 
             case 3:
                 return (
-                    <div className='px-4 sm:px-6 lg:px-12 py-6 lg:py-16'>
+                    <div className='px-4 sm:px-6 lg:px-12 py-6 lg:py-3'>
                         <div className="mb-6 lg:mb-8">
+                            <div className='border-1 sm:w-max w-full border-red-600 p-3 my-4 text-red-600 font-semibold rounded-lg'>Make sure to Download your Tedx Tickets at Success Page</div>
                             <h2 className='text-2xl sm:text-3xl font-bold text-gray-900 mb-2'>
                                 Complete Your Purchase
                             </h2>
@@ -889,7 +964,7 @@ export default function TicketBooking() {
                         </div>
 
                         <div className='space-y-4'>
-                                    {getSelectedTicketsDisplay().length > 0 ? (
+                            {getSelectedTicketsDisplay().length > 0 ? (
                                 getSelectedTicketsDisplay().map((ticket) => {
                                     const each = ticket.discountedPrice ?? ticket.price
                                     return (

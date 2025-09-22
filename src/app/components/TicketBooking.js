@@ -582,27 +582,33 @@ export default function TicketBooking() {
                                         </p>
                                     </div>
 
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 w-[70%] mx-auto gap-4 mb-6">
-                                        <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-                                            <div className="aspect-square bg-gray-100 rounded-lg mb-3 flex items-center justify-center">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 dm:w-[70%] w-full mx-auto gap-4 mb-6">
+                                        <div className="bg-white rounded-lg sm:p-4 p-1 shadow-sm border border-gray-100">
+                                            <div className="aspect-square bg-gray-100 rounded-lg mb-3 relative">
                                                 <Image
-                                                    src="https://res.cloudinary.com/djoxzzlue/image/upload/v1758505670/merch_rearq2.jpg"
-                                                    alt="TEDx T-Shirt" width={100} height={100}
-                                                    className="w-full h-full object-cover rounded-lg"
+                                                    src="https://res.cloudinary.com/djoxzzlue/image/upload/v1758534513/TEDx_T-shirt_White_qcjrs0.png"
+                                                    alt="TEDx T-Shirt"
+                                                    fill
+                                                    className="object-cover rounded-lg"
+                                                    sizes="(max-width: 768px) 100vw, 400px"
                                                 />
                                             </div>
+
                                             <h4 className="font-semibold text-gray-900 text-sm">TEDx Black T-Shirt</h4>
                                             <p className="text-xs text-gray-600 mt-1">Premium cotton blend</p>
                                         </div>
 
-                                        <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-                                            <div className="aspect-square bg-gray-100 rounded-lg mb-3 flex items-center justify-center">
+                                        <div className="bg-white rounded-lg sm:p-4 p-1 shadow-sm border border-gray-100">
+                                            <div className="aspect-square bg-gray-100 rounded-lg mb-3 relative">
                                                 <Image
-                                                    src="https://res.cloudinary.com/djoxzzlue/image/upload/v1758505670/merch_white_o3euwv.jpg"
-                                                    alt="TEDx Tote Bag" width={100} height={100}
-                                                    className="w-full h-full object-cover rounded-lg"
+                                                    src="https://res.cloudinary.com/djoxzzlue/image/upload/v1758534513/TEDx_T-shirt_black_wp8k1j.png"
+                                                    alt="TEDx T-Shirt"
+                                                    fill
+                                                    className="object-cover rounded-lg"
+                                                    sizes="(max-width: 768px) 100vw, 400px"
                                                 />
                                             </div>
+
                                             <h4 className="font-semibold text-gray-900 text-sm">TEDx White T-shirt</h4>
                                             <p className="text-xs text-gray-600 mt-1">Premium cotton blend</p>
                                         </div>
@@ -610,14 +616,30 @@ export default function TicketBooking() {
 
                                     <div className="text-center">
                                         <button
-                                            onClick={() => window.open('https://www.tachpae.com/events/tedx-leadcity-the-collective-2025', '_blank')}
-                                            className="inline-flex cursor-pointer items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200 shadow-md hover:shadow-lg"
+                                            onClick={() =>
+                                                window.open(
+                                                    "https://www.tachpae.com/events/tedx-leadcity-the-collective-2025",
+                                                    "_blank"
+                                                )
+                                            }
+                                            className="inline-flex cursor-pointer items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200 shadow-md hover:shadow-lg whitespace-nowrap"
                                         >
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                            <svg
+                                                className="w-5 h-5"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                                                />
                                             </svg>
                                             Buy Merchandise
                                         </button>
+
                                         <p className="text-xs text-gray-500 mt-2">
                                             Available for pickup at the event or Delivery
                                         </p>

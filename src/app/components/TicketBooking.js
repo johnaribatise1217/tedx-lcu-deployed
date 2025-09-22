@@ -237,7 +237,7 @@ export default function TicketBooking() {
                 email: formData.email,
                 ticketId: Object.keys(selectedTickets)[0],
                 quantity: ticketQty,
-                discountCode : saved.toString()
+                discountCode: saved
             }
 
             try {
@@ -377,41 +377,41 @@ export default function TicketBooking() {
                             </div>
                         ) : (
                             <>
-                                        {/* Discount Input (render above ticket list) */}
-                                        <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                                            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                                                <div className="flex-1">
-                                                    <label className='block text-sm font-semibold text-gray-700 mb-2'>Have a discount code?</label>
-                                                    <div className="flex gap-2">
-                                                        <input
-                                                            type='text'
-                                                            value={discountCodeInput}
-                                                            onChange={(e) => setDiscountCodeInput(e.target.value)}
-                                                            placeholder='Enter discount code'
-                                                            className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black outline-none text-base'
-                                                        />
-                                                        {!appliedDiscount ? (
-                                                            <button
-                                                                onClick={applyDiscount}
-                                                                disabled={discountLoading}
-                                                                className='px-4 py-3 bg-black text-white rounded-lg font-medium'
-                                                            >
-                                                                {discountLoading ? 'Checking...' : 'Apply'}
-                                                            </button>
-                                                        ) : (
-                                                            <button
-                                                                onClick={removeDiscount}
-                                                                className='px-4 py-3 bg-red-600 text-white rounded-lg font-medium'
-                                                            >
-                                                                Remove
-                                                            </button>
-                                                        )}
-                                                    </div>
-                                                    {discountError && <p className='mt-2 text-sm text-red-600'>{discountError}</p>}
-                                                    {appliedDiscount && <p className='mt-2 text-sm text-green-700'>Applied: {appliedDiscount.code} — {appliedDiscount.percentage}% off until {new Date(appliedDiscount.endDate).toLocaleString()}</p>}
-                                                </div>
+                                {/* Discount Input (render above ticket list) */}
+                                <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                    <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                                        <div className="flex-1">
+                                            <label className='block text-sm font-semibold text-gray-700 mb-2'>Have a discount code?</label>
+                                            <div className="flex gap-2">
+                                                <input
+                                                    type='text'
+                                                    value={discountCodeInput}
+                                                    onChange={(e) => setDiscountCodeInput(e.target.value)}
+                                                    placeholder='Enter discount code'
+                                                    className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black outline-none text-base'
+                                                />
+                                                {!appliedDiscount ? (
+                                                    <button
+                                                        onClick={applyDiscount}
+                                                        disabled={discountLoading}
+                                                        className='px-4 py-3 bg-black text-white rounded-lg font-medium'
+                                                    >
+                                                        {discountLoading ? 'Checking...' : 'Apply'}
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        onClick={removeDiscount}
+                                                        className='px-4 py-3 bg-red-600 text-white rounded-lg font-medium'
+                                                    >
+                                                        Remove
+                                                    </button>
+                                                )}
                                             </div>
+                                            {discountError && <p className='mt-2 text-sm text-red-600'>{discountError}</p>}
+                                            {appliedDiscount && <p className='mt-2 text-sm text-green-700'>Applied: {appliedDiscount.code} — {appliedDiscount.percentage}% off until {new Date(appliedDiscount.endDate).toLocaleString()}</p>}
                                         </div>
+                                    </div>
+                                </div>
                                 {ticketQty > 0 && (
                                     <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                                         <div className="flex items-center gap-2">
@@ -783,8 +783,9 @@ export default function TicketBooking() {
 
             case 3:
                 return (
-                    <div className='px-4 sm:px-6 lg:px-12 py-6 lg:py-16'>
+                    <div className='px-4 sm:px-6 lg:px-12 py-6 lg:py-3'>
                         <div className="mb-6 lg:mb-8">
+                            <div className='border-1 sm:w-max w-full border-red-600 p-3 my-4 text-red-600 font-semibold rounded-lg'>Make sure to Download your Tedx Tickets at Success Page</div>
                             <h2 className='text-2xl sm:text-3xl font-bold text-gray-900 mb-2'>
                                 Complete Your Purchase
                             </h2>
@@ -889,7 +890,7 @@ export default function TicketBooking() {
                         </div>
 
                         <div className='space-y-4'>
-                                    {getSelectedTicketsDisplay().length > 0 ? (
+                            {getSelectedTicketsDisplay().length > 0 ? (
                                 getSelectedTicketsDisplay().map((ticket) => {
                                     const each = ticket.discountedPrice ?? ticket.price
                                     return (

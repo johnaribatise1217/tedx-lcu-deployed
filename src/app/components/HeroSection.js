@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState } from "react"
-import { CalendarMinus2, ChevronDown, MapPin, MoveRight } from "lucide-react"
+import { CalendarMinus2, ChevronDown, MapPin, MergeIcon, MoveRight } from "lucide-react"
 import { Inter } from "next/font/google"
 import Link from "next/link"
 
@@ -52,10 +52,16 @@ export default function HeroSection() {
                 </h1>
 
                 {/* Button */}
-                <div className="flex justify-center text-white mt-6">
+                <div className="flex gap-3 justify-center text-white mt-6">
                     <Link href='/tickets'>
                         <button className="flex items-center bg-red-600 hover:bg-red-700 cursor-pointer px-6 py-3 sm:px-8 sm:py-4 rounded-lg gap-3 text-xl sm:text-2xl md:text-3xl">
                             Get Tickets <MoveRight className="text-lg sm:text-xl" />
+                        </button>
+                    </Link>
+
+                    <Link href='https://www.tachpae.com/events/tedx-leadcity-the-collective-2025'>
+                        <button className="flex items-center hover:bg-red-700 border-2 border-red-600 transition duration-200 cursor-pointer px-6 py-3 sm:px-8 sm:py-4 rounded-lg gap-3 text-xl sm:text-2xl md:text-3xl">
+                            Get Tedx Merch <MergeIcon className="text-lg sm:text-xl" />
                         </button>
                     </Link>
                 </div>

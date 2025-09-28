@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, CheckCircle2, Download } from "lucide-react";
+import { failureNotify } from "utils/toaster";
 import { TicketsService } from "service/TicketApi";
 import html2canvas from "html2canvas-pro";
 import jsPDF from "jspdf";
@@ -11,6 +12,10 @@ import { QRCodeCanvas } from "qrcode.react";
 const SuccessPage = () => {
   const [bookingData, setBookingData] = useState({});
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false)
+  const [errorMsg, setErrorMsg] = useState("")
+  const [downloading, setDownloading] = useState(false);
+  const [downloaded, setDownloaded] = useState(false)
   const router = useRouter();
   const searchParams = useSearchParams();
   const trxRef = searchParams.get('trxref');
@@ -36,6 +41,10 @@ const SuccessPage = () => {
           setBookingData(response);
         }
       } catch (error) {
+        setLoading(false)
+        setBookingData(null)
+        setError(true)
+        setErrorMsg(error.response?.data?.message)
         console.error("Error verifying payment:", error);
       } finally {
         setLoading(false);
@@ -47,49 +56,85 @@ const SuccessPage = () => {
   }, [trxRef, ticketId]);
 
   const handleDownloadPdf = async () => {
-    const element = printRef.current;
+    if (!printRef.current) return;
 
-    if (!element) {
-      return;
+    try {
+      setDownloading(true);
+
+      const canvas = await html2canvas(printRef.current, { scale: 3 });
+      const pdf = new jsPDF({ orientation: "portrait", unit: "px", format: "a4" });
+
+      const data = canvas.toDataURL("image/png");
+      const imgProperties = pdf.getImageProperties(data);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
+
+      pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save("TedxLcuTicket.pdf:"+ bookingData.transactionReference);
+      setDownloaded(true)
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+    } finally {
+      setDownloading(false);
     }
-
-    const canvas = await html2canvas(element, {
-      scale: 3,
-    });
-
-    const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: "px",
-      format: "a4"
-    });
-
-    const data = canvas.toDataURL('image/png');
-    const imgProperties = pdf.getImageProperties(data);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
-
-    pdf.addImage(data, 'PNG', 0, 0, pdfWidth, pdf.internal.pageSize.getHeight());
-    pdf.save('TedxLcuTicket.pdf');
   };
 
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 flex-col p-2 sm:p-4">
       {/* Success Message - Outside of printable area */}
-      <div className="mb-4 sm:mb-6 text-center px-2">
-        <CheckCircle2 className="mx-auto text-red-500 w-12 h-12 sm:w-16 sm:h-16 mb-2 sm:mb-4" />
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">
-          Payment Successful 🎉
-        </h1>
-        <p className="text-sm sm:text-base text-gray-600 px-2">
-          Thank you for your purchase! Your ticket has been successfully generated.
-        </p>
+      {
+        error && (
+          <div className="text-red-600 items-center ">
+            {errorMsg}
+          </div>
+        )
+      }
+      {loading ? (
+      <div className="flex items-center justify-center min-h-screen w-full bg-red-600">
+        <div className="text-center text-white px-4">
+          <svg
+            className="animate-spin h-16 w-16 sm:h-24 sm:w-24 mx-auto mb-4"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+            ></path>
+          </svg>
+          <h2 className="text-2xl sm:text-3xl font-bold">Loading Ticket...</h2>
+          <p className="mt-2 text-sm sm:text-base text-red-100">
+            Please wait while we verify your payment.
+          </p>
+        </div>
       </div>
-
-      {bookingData ? (
-        <>
-          {/* Ticket Design - This will be in the PDF */}
-          <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full px-4 sm:px-0">
+    ): 
+    (
+      <>
+        <div className="mb-4 sm:mb-6 text-center px-2">
+          <CheckCircle2 className="mx-auto text-red-500 w-12 h-12 sm:w-16 sm:h-16 mb-2 sm:mb-4" />
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">
+            Payment Successful 🎉
+          </h1>
+          <p className="text-sm sm:text-base text-gray-600 px-2">
+            Thank you for your purchase! Your ticket has been successfully generated.
+          </p>
+          <small className="text-sm sm:text-base text-gray-600 px-2">
+            Click the DOWNLOAD TICKET and be patient.
+          </small>
+        </div>
+        <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row items-center mb-[1rem] justify-center gap-3 sm:gap-4 w-full px-4 sm:px-0">
             <button
               onClick={() => router.push("/")}
               className="bg-gray-500 hover:bg-gray-600 w-full sm:w-auto flex items-center justify-center gap-2 text-white font-medium py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 cursor-pointer text-sm sm:text-base"
@@ -100,10 +145,27 @@ const SuccessPage = () => {
 
             <button
               onClick={handleDownloadPdf}
-              className="bg-red-500 hover:bg-red-600 cursor-pointer w-full sm:w-auto flex items-center justify-center gap-2 text-white font-medium py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 text-sm sm:text-base"
+              disabled={!bookingData?.firstName || downloading || downloaded}
+              className={`w-full sm:w-auto flex items-center justify-center gap-2 font-medium py-3 px-6 rounded-lg shadow-lg text-sm sm:text-base transition-all duration-200 transform
+                ${(!bookingData?.firstName || downloading)
+                  ? "bg-gray-400 cursor-not-allowed text-white"
+                  : "bg-red-500 hover:bg-red-600 text-white hover:scale-105"}
+              `}
             >
-              <Download size={18} className="sm:w-5 sm:h-5" />
-              Download Ticket
+              {downloading ? (
+                <>
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                  </svg>
+                  Downloading Ticket...
+                </>
+              ) : (
+                <>
+                  <Download size={18} className="sm:w-5 sm:h-5" />
+                  Download Ticket
+                </>
+              )}
             </button>
           </div>
           <div
@@ -285,31 +347,8 @@ const SuccessPage = () => {
             <div className="absolute bottom-0 left-0 w-8 h-8 sm:w-12 sm:h-12 border-l-4 border-b-4 border-white/20 rounded-bl-xl sm:rounded-bl-2xl"></div>
             <div className="absolute bottom-0 right-0 w-8 h-8 sm:w-12 sm:h-12 border-r-4 border-b-4 border-white/20 rounded-br-xl sm:rounded-br-2xl"></div>
           </div>
-
-          {/* Action Buttons - Outside of printable area */}
-          {/* <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full px-4 sm:px-0">
-            <button
-              onClick={() => router.push("/")}
-              className="bg-gray-500 hover:bg-gray-600 w-full sm:w-auto flex items-center justify-center gap-2 text-white font-medium py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 cursor-pointer text-sm sm:text-base"
-            >
-              <ArrowLeft size={18} className="sm:w-5 sm:h-5" />
-              Go to Homepage
-            </button>
-
-            <button
-              onClick={handleDownloadPdf}
-              className="bg-red-500 hover:bg-red-600 cursor-pointer w-full sm:w-auto flex items-center justify-center gap-2 text-white font-medium py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 text-sm sm:text-base"
-            >
-              <Download size={18} className="sm:w-5 sm:h-5" />
-              Download Ticket
-            </button>
-          </div> */}
-        </>
-      ) : (
-        <div className="bg-white p-6 sm:p-8 rounded-xl sm:rounded-2xl shadow-lg text-center mx-4 sm:mx-0">
-          <p className="text-gray-500 italic text-sm sm:text-base">No booking details found.</p>
-        </div>
-      )}
+      </>
+    )}
     </div>
   );
 };

@@ -61,24 +61,46 @@ const SuccessPage = () => {
     try {
       setDownloading(true);
 
-      const canvas = await html2canvas(printRef.current, { scale: 3 });
-      const pdf = new jsPDF({ orientation: "portrait", unit: "px", format: "a4" });
+      // Increase scale for better resolution and ensure full content capture
+      const canvas = await html2canvas(printRef.current, {
+        scale: 4, // Higher scale for better quality
+        windowWidth: document.documentElement.scrollWidth, // Ensure full width
+        windowHeight: document.documentElement.scrollHeight, // Ensure full height
+      });
+
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm", // Switch to mm for better A4 compatibility
+        format: "a4",
+      });
 
       const data = canvas.toDataURL("image/png");
-      const imgProperties = pdf.getImageProperties(data);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
+      const imgProps = pdf.getImageProperties(data);
+      const pdfWidth = 210; // A4 width in mm
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-      pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight);
-      pdf.save("TedxLcuTicket.pdf:"+ bookingData.transactionReference);
-      setDownloaded(true)
+      // Add a new page if content exceeds A4 height
+      let heightLeft = pdfHeight;
+      let position = 0;
+
+      while (heightLeft > 0) {
+        pdf.addImage(data, "PNG", 0, position, pdfWidth, pdfHeight);
+        heightLeft -= 297; // A4 height in mm
+        position -= 297;
+        if (heightLeft > 0) {
+          pdf.addPage();
+        }
+      }
+
+      pdf.save(`TedxLcuTicket_${bookingData.transactionReference || "ticket"}.pdf`);
+      setDownloaded(true);
     } catch (error) {
       console.error("Error downloading PDF:", error);
+      failureNotify("Failed to download ticket. Please try again.");
     } finally {
       setDownloading(false);
     }
   };
-
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 flex-col p-2 sm:p-4">
@@ -131,13 +153,13 @@ const SuccessPage = () => {
             Thank you for your purchase! Your ticket has been successfully generated.
           </p>
           <small className="text-sm sm:text-base text-gray-600 px-2">
-            Click the DOWNLOAD TICKET and be patient.
-          </small>
+            Click the DOWNLOAD TICKET ONCE and be patient.
+          </small> 
         </div>
         <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row items-center mb-[1rem] justify-center gap-3 sm:gap-4 w-full px-4 sm:px-0">
             <button
               onClick={() => router.push("/")}
-              className="bg-gray-500 hover:bg-gray-600 w-full sm:w-auto flex items-center justify-center gap-2 text-white font-medium py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 cursor-pointer text-sm sm:text-base"
+              className="bg-g ray-500 hover:bg-gray-600 w-full sm:w-auto flex items-center justify-center gap-2 text-white font-medium py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 cursor-pointer text-sm sm:text-base"
             >
               <ArrowLeft size={18} className="sm:w-5 sm:h-5" />
               Go to Homepage
@@ -170,7 +192,7 @@ const SuccessPage = () => {
           </div>
           <div
             ref={printRef}
-            className="bg-white rounded-xl sm:rounded-2xl shadow-2xl max-w-2xl w-full mx-2 sm:mx-0 overflow-hidden relative"
+            className="bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full mx-2 sm:mx-0 overflow-visible relative"
             style={{
               background: "linear-gradient(135deg, #FF0000 0%, #000000 100%)",
             }}

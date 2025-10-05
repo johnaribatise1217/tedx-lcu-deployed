@@ -17,6 +17,7 @@ export default function TicketBooking() {
         phone: '',
         institution: '',
         gender: '',
+        workshopInterest: '',
         faculty: '',
         courseOfStudy: '',
     })
@@ -787,6 +788,24 @@ export default function TicketBooking() {
 
                                 <div>
                                     <label className='block text-sm font-semibold text-gray-700 mb-2'>
+                                        Workshop Interest
+                                    </label>
+                                    <select
+                                        name='workshopInterest'
+                                        value={formData.workshopInterest}
+                                        onChange={handleFormChange}
+                                        className='w-full px-4 py-3 sm:py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none bg-white text-base'
+                                    >
+                                        <option value=''>Select Workshop Interest</option>
+                                        <option value='Breaking Into Tech Workshop'>Breaking Into Tech Workshop</option>
+                                        <option value='Content Creation Workshop'>Content Creation Workshop</option>
+                                        <option value='Personal Development Workshop'>Personal Development Workshop</option>
+                                        <option value='Finance Workshop'>Finance Workshop</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label className='block text-sm font-semibold text-gray-700 mb-2'>
                                         Institution/Organization
                                     </label>
                                     <input
@@ -811,7 +830,7 @@ export default function TicketBooking() {
                                         value={formData.faculty}
                                         onChange={handleFormChange}
                                         className='w-full px-4 py-3 sm:py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none text-base'
-                                        placeholder="E.g Facultty of Science"
+                                        placeholder="E.g Faculty of Science"
                                     />
                                     <p className="mt-1 text-xs text-gray-500">
                                         Required for Students
@@ -837,7 +856,7 @@ export default function TicketBooking() {
                             </div>
                         </div>
 
-                        <div className='w-full mt-6 sm:mt-8 flex gap-3'>
+                        <div className='w-full mb-[4rem] mt-6 sm:mt-8 flex gap-3'>
                             <button
                                 onClick={handleBack}
                                 className='w-full sm:w-auto px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium mb-4 sm:mb-0 touch-manipulation'

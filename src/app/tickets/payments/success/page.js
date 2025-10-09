@@ -159,7 +159,7 @@ const SuccessPage = () => {
         <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row items-center mb-[1rem] justify-center gap-3 sm:gap-4 w-full px-4 sm:px-0">
             <button
               onClick={() => router.push("/")}
-              className="bg-g ray-500 hover:bg-gray-600 w-full sm:w-auto flex items-center justify-center gap-2 text-white font-medium py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 cursor-pointer text-sm sm:text-base"
+              className="bg-g ray-500 bg-gray-600 w-full sm:w-auto flex items-center justify-center gap-2 text-white font-medium py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 cursor-pointer text-sm sm:text-base"
             >
               <ArrowLeft size={18} className="sm:w-5 sm:h-5" />
               Go to Homepage
@@ -174,7 +174,14 @@ const SuccessPage = () => {
                   : "bg-red-500 hover:bg-red-600 text-white hover:scale-105"}
               `}
             >
-              {downloading ? (
+              {!downloading && !downloaded && (
+                  <>
+                    <Download size={18} className="sm:w-5 sm:h-5" />
+                    Download Ticket
+                  </>
+                )
+              }
+              {downloading && (
                 <>
                   <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -182,10 +189,11 @@ const SuccessPage = () => {
                   </svg>
                   Downloading Ticket...
                 </>
-              ) : (
+              )}
+              {downloaded && !downloading && (
                 <>
-                  <Download size={18} className="sm:w-5 sm:h-5" />
-                  Download Ticket
+                  <CheckCircle2 size={18} className="sm:w-5 sm:h-5 text-white" />
+                  Ticket Downloaded
                 </>
               )}
             </button>

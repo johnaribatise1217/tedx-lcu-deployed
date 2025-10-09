@@ -799,7 +799,7 @@ export default function TicketBooking() {
                                         <option value=''>Select Workshop Interest</option>
                                         <option value='Breaking Into Tech Workshop'>Breaking Into Tech Workshop</option>
                                         <option value='Content Creation Workshop'>Content Creation Workshop</option>
-                                        <option value='Personal Development Workshop'>Personal Development Workshop</option>
+                                        <option value='Personal Development Workshop'>Arts Workshop</option>
                                         <option value='Finance Workshop'>Finance Workshop</option>
                                     </select>
                                 </div>

@@ -30,5 +30,16 @@ export const TicketsService = {
     } catch (error) {
       failureNotify(error.response?.data?.message || "Something went wrong while verifying payment");
     }
+  },
+  generateQRcode: async (email, trxref) => {
+    try {
+      const response = await apiClient.get(`/tickets/generate-qrcode?email=${email}&trxref=${trxref}`);
+      if(response.data.success){
+        successNotify("QR code generated successfully");
+      }
+      return response.data.data
+    } catch (error) {
+      failureNotify(error.response?.data?.message || "Something went wrong while generating QR code");
+    }
   }
 }

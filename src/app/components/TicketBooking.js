@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { ChevronRight, Check, AlertCircle, Info, X } from 'lucide-react'
+import { ChevronRight, Check, AlertCircle, Info, X, Loader2 } from 'lucide-react'
+import { QRCodeCanvas } from 'qrcode.react';
 import { TicketsService } from 'service/TicketApi';
 import { apiClient } from 'service/apiClient';
 import { successNotify, failureNotify } from '@/app/tickets/utils/toaster';
@@ -10,6 +11,32 @@ import Image from 'next/image';
 export default function TicketBooking() {
     const [currentStep, setCurrentStep] = useState(1)
     const [selectedTickets, setSelectedTickets] = useState({})
+    const [generateQRcodeInputs, setGenerateQRcodeInputs] = useState({
+        email: '',
+        trxref: ''
+    })
+    const [qrUrl, setQrUrl] = useState("");
+    const [qrLoading, setQRLoading] = useState(false);
+
+    const handleGenerate = async () => {
+        const { email, trxref } = generateQRcodeInputs;
+        if (!email || !trxref) {
+        alert("Please enter both email and transaction reference");
+            return;
+        }
+
+        try {
+            setQRLoading(true);
+            const response = await TicketsService.generateQRcode(email, trxref) // returns the URL from your backend
+            if(response){
+                setQrUrl(response);
+            }
+        } catch (error) {
+        console.error(error);
+        } finally {
+            setQRLoading(false);
+        }
+    };
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -646,6 +673,37 @@ export default function TicketBooking() {
                                         </p>
                                     </div>
                                 </div>
+                                <p className='mt-8'>Missing QR code?</p>
+                                <div className='w-full mt-5 flex flex-col items-start lg:flex-row gap-[1.5rem] lg:gap-[3rem]'>
+                                    <input value={generateQRcodeInputs.email}
+                                     onChange={(e) => setGenerateQRcodeInputs((prev) => ({...prev, email: e.target.value}))} 
+                                     placeholder='Enter Ticket Email' className='w-full border border-gray-300 rounded-[10px] lg:w-1/2 p-3'/>
+                                    <input value={generateQRcodeInputs.trxref} onChange={(e) => setGenerateQRcodeInputs((prev) => ({...prev, trxref: e.target.value}))} 
+                                    placeholder='Enter Ticket Reference' className='w-full p-3 border border-gray-300 rounded-[10px] lg:w-1/2'/>
+                                </div>
+                                <button 
+                                onClick={handleGenerate}
+                                disabled={!generateQRcodeInputs.email || !generateQRcodeInputs.trxref || qrLoading}
+                                className='mt-4 text-[15px] p-3 rounded-[12px] font-[600] bg-blue-100 cursor-pointer hover:bg-blue-200 text-blue-700'>
+                                {qrLoading ? 'Generating QR Code...' : 'Generate QR Code' }
+                                </button>
+                                {/* Loading Spinner */}
+                                {qrLoading && (
+                                    <div className="flex justify-center items-center mt-5">
+                                    <Loader2 className="animate-spin text-blue-600 w-6 h-6" />
+                                    <p className="ml-2 text-blue-600 font-medium">Fetching QR Code...</p>
+                                    </div>
+                                )}
+
+                                {/* QR Code Display */}
+                                {qrUrl && !qrLoading && (
+                                    <div className="mt-6 flex flex-col items-center">
+                                        <h3 className="text-lg font-semibold mb-3 text-gray-700">
+                                            Your Ticket QR Code
+                                        </h3>
+                                        <QRCodeCanvas value={qrUrl} size={220} level="H" includeMargin={true} />
+                                    </div>
+                                )}
                             </>
                         )}
                     </div>

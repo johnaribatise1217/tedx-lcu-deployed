@@ -95,7 +95,18 @@ export default function Speakers() {
 
     // Don't render anything if there are no speakers
     if (!loading && (!speakers || speakers.length === 0)) {
-        return null;
+        return (
+            <section id="speakers" className="py-12 px-4 sm:px-6 bg-gray-50">
+                <div className="max-w-6xl mx-auto text-center mb-12 sm:mb-16">
+                    <h2 className={`${outfit.className} text-2xl sm:text-3xl md:text-5xl font-semibold text-gray-900 mb-4 sm:mb-6`}>
+                        Featured Speakers
+                    </h2>
+                    <p className={`${outfit.className} text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed`}>
+                        {error ? 'Unable to load speakers at this moment. Please try again later.' : 'No speakers scheduled yet. Check back soon!'}
+                    </p>
+                </div>
+            </section>
+        );
     }
 
     return (

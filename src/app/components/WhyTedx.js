@@ -43,6 +43,7 @@ export default function WhyTedx() {
                         src="https://res.cloudinary.com/djoxzzlue/image/upload/v1755884377/IMG_2397_kwj5go.jpg"
                         alt="TEDxLCU Event"
                         width={500}
+                        loading="eager"
                         height={600}
                         className="rounded-2xl h-auto w-full object-cover hover:scale-[1.04] transition-transform duration-300 ease-in-out"
                     />

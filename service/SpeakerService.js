@@ -9,12 +9,12 @@ export const SpeakerService = {
             if (response.data?.success) {
                 return response.data.data ?? response.data;
             } else {
-                failureNotify(response.data?.statusMessage || 'Failed to fetch speakers');
+                // failureNotify(response.data?.statusMessage || 'Failed to fetch speakers');
                 return [];
             }
         } catch (error) {
             console.error('Get speakers error:', error.response?.data || error.message)
-            failureNotify('Failed to fetch speakers');
+            // failureNotify('Failed to fetch speakers');
             return []; // Return empty array instead of throwing for better UX
         }
     },

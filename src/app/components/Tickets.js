@@ -15,6 +15,7 @@ const outfit = Outfit({
 export default function Tickets() {
     const [tickets, setTickets] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);  
 
     useEffect(() => {
         const fetchTicket = async () => {
@@ -24,6 +25,7 @@ export default function Tickets() {
                 setTickets(response);
             } catch (error) {
                 console.log('Error fetching tickets:', error);
+                setError(error);  
                 setTickets([]);
             } finally {
                 setLoading(false);
@@ -95,7 +97,7 @@ export default function Tickets() {
                 </motion.div>
 
                 {/* Ticket Options */}
-                {tickets.length > 0 ? (
+                {tickets && tickets.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12 md:mb-16">
                         {tickets.map((ticket, index) => (
                             <motion.div

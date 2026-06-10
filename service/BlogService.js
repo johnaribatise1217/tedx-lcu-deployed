@@ -11,7 +11,7 @@ export const BlogService = {
                 return response.data.data;
             }
         } catch (error) {
-            failureNotify(error.response?.data?.message || "Failed to fetch blog posts");
+            // failureNotify(error.response?.data?.message || "Failed to fetch blog posts");
         }
     },
 
@@ -23,7 +23,7 @@ export const BlogService = {
                 return response.data.data;
             }
         } catch (error) {
-            failureNotify(error.response?.data?.message || "Failed to fetch blog post");
+            // failureNotify(error.response?.data?.message || "Failed to fetch blog post");
         }
     },
 

@@ -39,7 +39,30 @@ export default function Blog() {
     }, [])
 
     if (!loading && (!blogs || blogs.length === 0)) {
-        return null;
+        return (
+            <div id="blog" className="mt-20">
+                <motion.div
+                    initial={{ opacity: 0, y: 40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, ease: "easeIn" }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    className="text-black rounded-lg"
+                >
+                    <div className="bg-gray-200 p-6 sm:p-10">
+                        <h2
+                            className={`${outfit.className} text-3xl sm:text-4xl md:text-5xl font-normal flex flex-col items-center py-4`}
+                        >
+                            Our Blog
+                        </h2>
+                        <p
+                            className={`${outfit.className} text-base sm:text-lg md:text-xl text-gray-700 tracking-wider leading-relaxed lg:w-1/2 w-full mx-auto text-center`}
+                        >
+                            No blog posts yet. Check back soon!
+                        </p>
+                    </div>
+                </motion.div>
+            </div>
+        );
     }
 
     return (

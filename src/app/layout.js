@@ -28,6 +28,11 @@ export const metadata = {
     "thecollectives",
     "Lead City University 2025",
     "tedx Oyo Ibadan",
+    "Oyo State",
+    "tedx oyo state",
+    "TEDX OYO",
+    "tedx oyo",
+    "TEDx Nigeria",
     "tedx 2025",
     "TEDx LCU",
     "ideas worth spreading",
@@ -107,7 +112,7 @@ export default function RootLayout({ children }) {
         "@type": "PostalAddress",
         "streetAddress": "International Conference Center, Lead City University",
         "addressLocality": "Ibadan",
-        "addressRegion": "Oyo State",
+        "addressRegion": "Oyo",
         "addressCountry": "Nigeria"
       }
     },

@@ -6,6 +6,9 @@ export const metadata = {
     description: "Get your tickets for TEDx Lead City University event. Join us for inspiring talks, innovative ideas, and networking opportunities. Secure your spot today!",
     keywords: [
         "TEDx tickets",
+        "TEDx 2026 tickets",
+        "TEDx 2026 bookings",
+        "Events in November",
         "TEDx LCU tickets",
         "buy tickets",
         "event tickets",

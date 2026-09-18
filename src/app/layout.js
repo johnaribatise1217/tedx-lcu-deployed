@@ -26,7 +26,7 @@ export const metadata = {
     "tedx lcu",
     "The collective",
     "thecollectives",
-    "Lead City University 2025",
+    "Lead City University 2026",
     "tedx Oyo Ibadan",
     "Oyo State",
     "tedx oyo state",

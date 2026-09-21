@@ -7,7 +7,7 @@ export const TicketsService = {
       const response = await apiClient.get("/tickets/get-all");
       return response.data.data
     } catch (error) {
-      // failureNotify("Something went wrong while fetching tickets");
+       failureNotify(error.response?.data?.message || "Something went wrong fetching tickets");
     }
   },
   initiateTicket: async (request) => {
@@ -28,18 +28,19 @@ export const TicketsService = {
         return response.data.data
       }
     } catch (error) {
-      // failureNotify(error.response?.data?.message || "Something went wrong while verifying payment");
+      failureNotify(error.response?.data?.message || "Something went wrong while verifying payment");
     }
   },
   generateQRcode: async (email, trxref) => {
     try {
       const response = await apiClient.get(`/tickets/generate-qrcode?email=${email}&trxref=${trxref}`);
       if(response.data.success){
-        // successNotify("QR code generated successfully");
+        successNotify(response.data.statusMessage);
       }
       return response.data.data
     } catch (error) {
-      // failureNotify(error.response?.data?.message || "Something went wrong while generating QR code");
+      failureNotify(error.response?.data?.message || "Something went wrong while generating QR code");
     }
   }
 }
+

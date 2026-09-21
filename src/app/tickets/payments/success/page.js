@@ -210,7 +210,7 @@ const SuccessPage = () => {
               {/* Event Title */}
               <div className="text-white mb-2 sm:mb-4 flex-1">
                 <p className="text-white/80 text-xs sm:text-sm">Theme:</p>
-                <h2 className="text-lg sm:text-2xl font-bold mb-1">THE COLLECTIVE</h2>
+                <h2 className="text-lg sm:text-2xl font-bold mb-1">THE RIPPLE EFFECT</h2>
               </div>
 
               {/* TEDx Logo - Top Right */}

@@ -1,13 +1,9 @@
 "use client"
 import { useEffect, useState } from "react"
-import { CalendarMinus2, ChevronDown, MapPin, MergeIcon, MoveRight } from "lucide-react"
-import { Inter } from "next/font/google"
+import { CalendarMinus2, MapPin, MergeIcon, MoveRight } from "lucide-react"
 import Link from "next/link"
-
-const inter = Inter({
-    subsets: ["latin"],
-    weight: ["400", "700"],
-})
+import { anton, spaceMono } from "../fonts"
+import Marquee from "./Marquee"
 
 export default function HeroSection() {
     const [offsetY, setOffsetY] = useState(0)
@@ -19,58 +15,83 @@ export default function HeroSection() {
     }, [])
 
     return (
-        <div
-            className="bg-cover bg-no-repeat h-[70vh] lg:h-[80vh] xl:h-[100vh] w-full flex flex-col gap-6 items-center justify-between px-4 sm:px-6"
-            style={{
-                backgroundImage:
-                    "url('https://res.cloudinary.com/djoxzzlue/image/upload/v1755806126/lines_psk66q.jpg')",
-                backgroundPosition: `center calc(100% + ${offsetY * 0.3}px)`,
-            }}
-        >
-            <div></div>
+        <div className="relative">
+            <div
+                className="bg-grain bg-cover bg-no-repeat h-[85vh] sm:h-[90vh] xl:h-screen w-full flex flex-col justify-end"
+                style={{
+                    backgroundImage: "url('/images/Kamsi2.jpg')",
+                    backgroundPosition: `center calc(100% + ${offsetY * 0.3}px)`,
+                }}
+            >
+                {/* Darkening overlay for legibility */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/30" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/40" />
 
-            {/* Center content */}
-            <div className="flex flex-col gap-6 items-center text-center max-w-full">
-                {/* Date + Location */}
-                <div className="flex flex-col lg:flex-row gap-3 sm:gap-6 text-center justify-center items-center">
-                    <span className={`${inter.className} text-white flex items-center gap-2 text-sm sm:text-base`}>
-                        <CalendarMinus2 className="w-4 h-4 text-white" />
-                        Friday, November 7th, 2025
+                {/* Frame + kicker row */}
+                <div className="relative z-10 flex items-start justify-between px-5 sm:px-8 md:px-14 pt-28 sm:pt-32">
+                    <span className={`${spaceMono.className} text-white/80 text-[11px] sm:text-xs tracking-[0.3em] uppercase`}>
+                        Est. TEDxLeadCityUniversity
                     </span>
-                    <span className="hidden lg:block border-r h-5 border-white"></span>
-                    <span className={`${inter.className} text-white flex items-center gap-2 text-sm sm:text-base`}>
-                        <MapPin className="w-4 h-4 text-white sm:flex hidden" />
-                        International Conference Center, Lead City University, Ibadan.
+                    <span className={`${spaceMono.className} hidden sm:block text-white/80 text-xs tracking-[0.3em] uppercase`}>
+                        Ibadan, Nigeria
                     </span>
                 </div>
 
-                {/* Hero Title */}
-                <h1
-                    className={`${inter.className} text-4xl sm:text-5xl lg:text-[4.3rem] text-white font-bold leading-tight`}
-                >
-                    Join the Collective. <br className="hidden sm:block" />Are you in?
-                </h1>
+                {/* Center content */}
+                <div className="relative flex flex-col gap-6 items-center text-center px-4 sm:px-6 pb-14 sm:pb-16">
+                    {/* Ripple rings, pulsing outward behind the headline */}
+                    <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
+                        <span className="ripple-ring w-40 h-40 sm:w-56 sm:h-56" style={{ animationDelay: "0s" }} />
+                        <span className="ripple-ring w-40 h-40 sm:w-56 sm:h-56" style={{ animationDelay: "1.5s" }} />
+                        <span className="ripple-ring w-40 h-40 sm:w-56 sm:h-56" style={{ animationDelay: "3s" }} />
+                    </div>
 
-                {/* Button */}
-                <div className="flex gap-3 justify-center text-white mt-6">
-                    <Link href='/tickets'>
-                        <button className="flex items-center bg-red-600 hover:bg-red-700 cursor-pointer px-6 py-3 sm:px-8 sm:py-4 rounded-lg gap-3 text-xl sm:text-2xl md:text-3xl">
-                            Get Tickets <MoveRight className="text-lg sm:text-xl" />
-                        </button>
-                    </Link>
+                    <span className={`${spaceMono.className} relative z-10 border border-white text-red-100 text-[10px] sm:text-xs tracking-[0.3em] uppercase px-3 py-1`}>
+                        2026 THEME
+                    </span>
 
-                    <Link href='https://www.tachpae.com/events/tedx-leadcity-the-collective-2025'>
-                        <button className="flex items-center hover:bg-red-700 border-2 border-red-600 transition duration-200 cursor-pointer px-6 py-3 sm:px-8 sm:py-4 rounded-lg gap-3 text-xl sm:text-2xl md:text-3xl">
-                            Get Tedx Merch <MergeIcon className="text-lg sm:text-xl" />
-                        </button>
-                    </Link>
+                    {/* Hero Title */}
+                    <h1 className={`${anton.className} relative z-10 text-white uppercase leading-[0.9] text-5xl sm:text-7xl lg:text-8xl xl:text-9xl`}>
+                        The Ripple
+                        <br />
+                        <span className="text-red-600">Effect.</span>
+                    </h1>
+
+                    <p className={`${spaceMono.className} relative z-10 text-white/90 text-base sm:text-lg tracking-[0.15em] uppercase`}>
+                        Every idea sends a wave.
+                    </p>
+
+                    {/* Date + Location */}
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 items-center mt-2">
+                        <span className={`${spaceMono.className} text-white flex items-center gap-2 text-xs sm:text-sm border border-white/30 px-4 py-2`}>
+                            <CalendarMinus2 className="w-4 h-4 text-red-500" />
+                            Fri, Nov 6th, 2026
+                        </span>
+                        <span className={`${spaceMono.className} text-white flex items-center gap-2 text-xs sm:text-sm border border-white/30 px-4 py-2 text-center`}>
+                            <MapPin className="w-4 h-4 text-red-500 shrink-0" />
+                            International Conference Center, Lead City University
+                        </span>
+                    </div>
+
+                    {/* Buttons */}
+                    <div className="flex flex-wrap gap-3 justify-center mt-4">
+                        <Link href='/tickets'>
+                            <button className={`${spaceMono.className} flex items-center bg-red-600 hover:bg-red-700 cursor-pointer px-6 py-3.5 sm:px-8 sm:py-4 gap-3 text-xs sm:text-sm tracking-[0.2em] uppercase text-white transition-colors duration-300`}>
+                                Get Tickets <MoveRight size={16} />
+                            </button>
+                        </Link>
+
+                        <Link href='https://www.tachpae.com/events/tedx-leadcity-the-collective-2025'>
+                            <button className={`${spaceMono.className} flex items-center hover:bg-white hover:text-black border-2 border-white transition-colors duration-300 cursor-pointer px-6 py-3.5 sm:px-8 sm:py-4 gap-3 text-xs sm:text-sm tracking-[0.2em] uppercase text-white`}>
+                                Tedx Merch <MergeIcon size={16} />
+                            </button>
+                        </Link>
+                    </div>
                 </div>
             </div>
 
-            {/* Scroll Down Icon */}
-            <div className="border-2 sm:border-4 border-white rounded-full p-3 sm:p-4 mb-6 sm:mb-8">
-                <ChevronDown className="text-white w-6 h-6 sm:w-8 sm:h-8" />
-            </div>
+            {/* Ticker strip replaces the old scroll-down chevron */}
+            <Marquee />
         </div>
     )
 }

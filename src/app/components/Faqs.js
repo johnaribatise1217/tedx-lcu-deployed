@@ -2,14 +2,8 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Outfit } from "next/font/google";
-import { Plus, Minus, HelpCircle, Phone, Mail } from "lucide-react";
-import Link from "next/link";
-
-const outfit = Outfit({
-    subsets: ["latin"],
-    weight: ["400", "500", "600", "700"],
-});
+import { Plus, Minus, Phone, Mail } from "lucide-react";
+import { anton, spaceMono, outfit } from "../fonts";
 
 const faqData = [
     {
@@ -22,19 +16,19 @@ const faqData = [
         id: 2,
         question: "When and where is TEDxLeadCityUniversity taking place?",
         answer:
-            "TEDxLeadCityUniversity will take place on Friday, November 7th, 2025, from 9:00 AM to 4:00 PM at the International Conference Centre, Lead City University, Ibadan, Oyo state, Nigeria. The venue is easily accessible and comfortable for all attendees.",
+            "TEDxLeadCityUniversity will take place on Friday, November 6th, 2026, from 9:00 AM to 4:00 PM at the International Conference Centre, Lead City University, Ibadan, Oyo state, Nigeria. The venue is easily accessible and comfortable for all attendees.",
     },
     {
         id: 3,
         question: "How much do tickets cost and what's included?",
         answer:
-            "We offer three ticket tiers: Core Tickets (₦5,000), Circle Ticket (₦10,000), and Pulse Ticket (₦15,000). All tickets include access to talks, networking opportunities, and digital certificates. Higher tiers include additional perks like Priority check-in, meals, and speaker meet-and-greets.",
+            "We offer three ticket tiers: Spark Pass Tickets (₦6,000), Ripple Experience Ticket (₦13,000), and Wave circle Ticket (₦20,000).  All ticket holders will enjoy access to the TEDx talks, networking opportunities, and a digital certificate of participation. Higher ticket tiers unlock additional exclusive perks, including priority check-in, meals, opportunities to meet and engage with speakers, and access to an exclusive CV review session with career opportunities facilitated by our partners.",
     },
     {
         id: 4,
         question: "Are there student discounts available?",
         answer:
-            "If you're a member of a student community on campus, there's a chance that your association executives have Insider codes. They're limited in number, but if you get on first, use it! Good luck.",
+            "If you're a member of a student community on campus, there's a chance that your association executives have Insider codes. They're limited in number, but if you get on first, use it! Good luck.",
     },
 ];
 
@@ -52,7 +46,7 @@ export default function FAQ() {
     };
 
     return (
-        <section id="faqs" className="py-16 sm:py-20 bg-white">
+        <section id="faqs" className="py-16 sm:py-20 bg-[var(--paper)]">
             <div className="max-w-4xl mx-auto px-4 sm:px-6">
                 {/* Header */}
                 <motion.div
@@ -60,18 +54,20 @@ export default function FAQ() {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
                     viewport={{ once: true }}
-                    className="text-center mb-12 sm:mb-16"
+                    className="mb-12 sm:mb-16"
                 >
-                    <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-                        <HelpCircle className="w-6 h-6 sm:w-8 sm:h-8 text-red-600" />
-                        <h2
-                            className={`${outfit.className} text-2xl sm:text-4xl md:text-5xl font-bold text-gray-900`}
-                        >
-                            Frequently Asked Questions
-                        </h2>
+                    <div className="flex items-center gap-4 mb-8 sm:mb-10">
+                        <span className={`${spaceMono.className} text-red-600 text-xs sm:text-sm tracking-[0.3em]`}>07</span>
+                        <span className={`${spaceMono.className} text-gray-500 text-xs sm:text-sm tracking-[0.3em] uppercase`}>FAQ</span>
+                        <span className="flex-1 h-px bg-black/10" />
                     </div>
+                    <h2
+                        className={`${anton.className} uppercase text-3xl sm:text-5xl md:text-6xl text-center leading-[0.95]`}
+                    >
+                        Frequently Asked Questions
+                    </h2>
                     <p
-                        className={`${outfit.className} text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed`}
+                        className={`${outfit.className} text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed text-center mt-4`}
                     >
                         {`Got questions about TEDxLeadCityUniversity? We've got answers!`}
                         Find everything you need to know about the event, tickets, and
@@ -80,7 +76,7 @@ export default function FAQ() {
                 </motion.div>
 
                 {/* FAQ Items */}
-                <div className="space-y-4">
+                <div className="flex flex-col">
                     {faqData.map((item, index) => (
                         <motion.div
                             key={item.id}
@@ -88,22 +84,27 @@ export default function FAQ() {
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, delay: index * 0.1 }}
                             viewport={{ once: true }}
-                            className="bg-gray-50 rounded-xl sm:rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300"
+                            className="border-t border-black/10 last:border-b"
                         >
                             <button
                                 onClick={() => toggleItem(item.id)}
-                                className="w-full p-4 sm:p-6 text-left flex items-center justify-between group hover:bg-gray-100 transition-colors duration-200"
+                                className="w-full py-5 sm:py-6 text-left flex items-center justify-between gap-4 group cursor-pointer"
                             >
-                                <h3
-                                    className={`${outfit.className} text-base sm:text-lg font-semibold text-gray-900 pr-2 sm:pr-4 group-hover:text-red-600 transition-colors duration-200`}
-                                >
-                                    {item.question}
-                                </h3>
+                                <div className="flex items-baseline gap-4">
+                                    <span className={`${spaceMono.className} text-red-600 text-xs sm:text-sm`}>
+                                        0{index + 1}
+                                    </span>
+                                    <h3
+                                        className={`${outfit.className} text-base sm:text-lg font-semibold text-gray-900 group-hover:text-red-600 transition-colors duration-200`}
+                                    >
+                                        {item.question}
+                                    </h3>
+                                </div>
                                 <div className="flex-shrink-0">
                                     {openItems.has(item.id) ? (
-                                        <Minus className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 transition-transform duration-300" />
+                                        <Minus className="w-5 h-5 text-red-600" />
                                     ) : (
-                                        <Plus className="w-5 h-5 sm:w-6 sm:h-6 text-gray-500 group-hover:text-red-600 transition-colors duration-200" />
+                                        <Plus className="w-5 h-5 text-gray-500 group-hover:text-red-600 transition-colors duration-200" />
                                     )}
                                 </div>
                             </button>
@@ -117,8 +118,7 @@ export default function FAQ() {
                                         transition={{ duration: 0.3, ease: "easeInOut" }}
                                         className="overflow-hidden"
                                     >
-                                        <div className="px-4 sm:px-6 pb-4 sm:pb-6">
-                                            <div className="w-full h-px bg-gray-200 mb-3 sm:mb-4" />
+                                        <div className="pb-5 sm:pb-6 pl-8 sm:pl-9 pr-8">
                                             <p
                                                 className={`${outfit.className} text-sm sm:text-base text-gray-700 leading-relaxed`}
                                             >
@@ -138,20 +138,19 @@ export default function FAQ() {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.3 }}
                     viewport={{ once: true }}
-                    className="text-center mt-12 sm:mt-16 p-6 sm:p-8 bg-gradient-to-r from-red-50 to-gray-50 rounded-xl sm:rounded-2xl"
+                    className="text-center mt-12 sm:mt-16 p-6 sm:p-8 bg-black text-white"
                 >
                     <h3
-                        className={`${outfit.className} text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4`}
+                        className={`${anton.className} uppercase text-xl sm:text-2xl mb-3 sm:mb-4`}
                     >
                         Still have questions?
                     </h3>
-                    <p className={`${outfit.className} text-sm sm:text-base text-gray-600 mb-6`}>
+                    <p className={`${outfit.className} text-sm sm:text-base text-gray-400 mb-6`}>
                         {`Can't find what you're looking for? Our team is here to help!`}
                     </p>
-                    <div className="flex flex-col gap-5 pt-5 justify-center items-center">
-                        <h3 className="text-red-600 font-semibold md:text-2xl text-[16px] flex items-center gap-3"><Phone className="md:flex hidden" /> 08085614651, +234 812 541 8541, +234 703 434 6739</h3>
-                        <h3 className="text-black font-semibold md:text-2xl text-[16px] flex items-center gap-3"><Mail className="md:flex hidden" /> tedxleadcityuniversity@gmail.com</h3>
-
+                    <div className="flex flex-col gap-4 pt-2 justify-center items-center">
+                        <span className={`${spaceMono.className} text-red-500 font-semibold text-xs sm:text-sm flex items-center gap-3`}><Phone size={16} className="md:flex hidden" /> 08085614651, +234 812 541 8541, +234 703 434 6739</span>
+                        <span className={`${spaceMono.className} font-semibold text-xs sm:text-sm flex items-center gap-3`}><Mail size={16} className="md:flex hidden" /> tedxleadcityuniversity@gmail.com</span>
                     </div>
                 </motion.div>
             </div>

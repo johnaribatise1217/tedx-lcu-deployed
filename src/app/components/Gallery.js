@@ -3,39 +3,41 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Outfit } from "next/font/google";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-
-const outfit = Outfit({
-    subsets: ['latin'],
-    weight: ['400', '700']
-});
+import { anton, spaceMono, outfit } from "../fonts";
 
 const images = [
-    "https://res.cloudinary.com/djoxzzlue/image/upload/v1755885349/IMG_2190_wq1wjb.jpg",
-    "https://res.cloudinary.com/djoxzzlue/image/upload/v1755885344/IMG_2216_zh0mhh.jpg",
-    "https://res.cloudinary.com/djoxzzlue/image/upload/v1755885344/IMG_2170_tznlq1.jpg",
-    "https://res.cloudinary.com/djoxzzlue/image/upload/v1755884381/IMG_2382_phcmla.jpg",
-    "https://res.cloudinary.com/djoxzzlue/image/upload/v1755884318/IMG_2441_ypxhpq.jpg",
-    "https://res.cloudinary.com/djoxzzlue/image/upload/v1755884311/IMG_2249_zr9bib.jpg",
-    "https://res.cloudinary.com/djoxzzlue/image/upload/v1755814957/Ted-7_iel0l7.jpg",
-    "https://res.cloudinary.com/djoxzzlue/image/upload/v1755805800/IMG_2455_yh9zgq.jpg",
-    "https://res.cloudinary.com/djoxzzlue/image/upload/v1755806087/IMG_2174_xnku5f.jpg",
+    "/images/Attendee2.jpg",
+    "/images/Attendee28.jpg",
+    "/images/Attendee83.jpg",
+    "/images/Attendee89.jpg",
+    "/images/owolabi.jpg",
+    "/images/Kamsi.jpg",
+    "/images/Group.jpg",
+    "/images/Ibukun-Akinola.jpg",
+    "/images/Davina5.jpg",
 ];
 
 export default function Gallery() {
     return (
-        <section id='gallery' className="py-12 px-6">
-            <h2 className={`${outfit.className} text-5xl font-normal flex flex-col items-center pt-4`}>
+        <section id='gallery' className="py-16 sm:py-20 px-4 sm:px-6 md:px-14">
+            {/* Kicker */}
+            <div className="flex items-center gap-4 mb-8 sm:mb-10">
+                <span className={`${spaceMono.className} text-red-600 text-xs sm:text-sm tracking-[0.3em]`}>04</span>
+                <span className={`${spaceMono.className} text-gray-500 text-xs sm:text-sm tracking-[0.3em] uppercase`}>Gallery</span>
+                <span className="flex-1 h-px bg-black/10" />
+            </div>
+
+            <h2 className={`${anton.className} uppercase text-3xl sm:text-5xl md:text-6xl flex flex-col items-center`}>
                 Gallery
             </h2>
 
-            <p className={`${outfit.className} text-xl text-gray-700 tracking-wider leading-relaxed lg:w-1/2 w-full pb-10 mx-auto text-center`}>
+            <p className={`${outfit.className} text-base sm:text-xl text-gray-600 tracking-wide leading-relaxed lg:w-1/2 w-full pb-10 pt-4 mx-auto text-center`}>
                 A glimpse into our journey through captivating visuals.
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
                 {images.map((image, index) => (
                     <motion.div
                         key={index}
@@ -43,22 +45,22 @@ export default function Gallery() {
                         whileInView={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.4, delay: index * 0.1 }}
                         viewport={{ once: true }}
-                        className="overflow-hidden rounded-xl shadow-lg"
+                        className="overflow-hidden relative"
                     >
                         <Image
                             src={image}
                             alt={`Event Photo ${index + 1}`}
                             width={600}
                             height={400}
-                            className="object-cover w-full h-64 hover:scale-110 transition-transform duration-500"
+                            className="object-cover object-center w-full h-40 sm:h-56 md:h-84 grayscale hover:grayscale-0 hover:scale-105 transition-all duration-500"
                         />
                     </motion.div>
                 ))}
             </div>
 
-            <div className='flex justify-center text-white mt-7'>
-                <Link href='/gallery' className={`${outfit.className} flex items-center text-red-600 hover:text-black cursor-pointer p-5 rounded-lg gap-4 text-xl`}>
-                    See More <ArrowRight className='text-xl' />
+            <div className='flex justify-center mt-8 sm:mt-10'>
+                <Link href='/gallery' className={`${spaceMono.className} flex items-center gap-3 text-black hover:text-red-600 cursor-pointer text-xs sm:text-sm tracking-[0.2em] uppercase border-b-2 border-black hover:border-red-600 pb-1 transition-colors duration-300`}>
+                    See More <ArrowRight size={16} />
                 </Link>
             </div>
         </section>

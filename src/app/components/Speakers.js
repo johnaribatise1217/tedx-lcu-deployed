@@ -2,17 +2,11 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Outfit } from "next/font/google";
 import { Linkedin, Twitter, Instagram, Globe } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { SpeakerService } from "service/SpeakerService";
-
-const outfit = Outfit({
-    subsets: ['latin'],
-    weight: ['300', '400', '500', '600', '700']
-});
-
+import { anton, spaceMono, outfit } from "../fonts";
 
 export default function Speakers() {
     const [speakers, setSpeakers] = useState([]);
@@ -65,9 +59,14 @@ export default function Speakers() {
 
     if (loading) {
         return (
-            <section id="speakers" className="py-12 px-4 sm:px-6 bg-gray-50">
+            <section id="speakers" className="py-16 sm:py-20 px-4 sm:px-6 md:px-14 bg-[var(--paper)]">
                 <div className="max-w-6xl mx-auto text-center mb-12 sm:mb-16">
-                    <h2 className={`${outfit.className} text-2xl sm:text-3xl md:text-5xl font-semibold text-gray-900 mb-4 sm:mb-6`}>
+                    <div className="flex items-center gap-4 mb-8 sm:mb-10 text-left">
+                        <span className={`${spaceMono.className} text-red-600 text-xs sm:text-sm tracking-[0.3em]`}>05</span>
+                        <span className={`${spaceMono.className} text-gray-500 text-xs sm:text-sm tracking-[0.3em] uppercase`}>Speakers</span>
+                        <span className="flex-1 h-px bg-black/10" />
+                    </div>
+                    <h2 className={`${anton.className} uppercase text-3xl sm:text-5xl md:text-6xl mb-4 sm:mb-6`}>
                         Featured Speakers
                     </h2>
                     <p className={`${outfit.className} text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed`}>
@@ -77,7 +76,7 @@ export default function Speakers() {
                 <div className="max-w-7xl mx-auto">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                         {[1, 2, 3].map((i) => (
-                            <div key={i} className="bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse">
+                            <div key={i} className="bg-white border border-black/10 overflow-hidden animate-pulse">
                                 <div className="h-60 sm:h-72 md:h-80 bg-gray-300"></div>
                                 <div className="p-4 sm:p-6">
                                     <div className="h-6 bg-gray-300 rounded mb-2"></div>
@@ -110,15 +109,20 @@ export default function Speakers() {
     }
 
     return (
-        <section id="speakers" className="py-12 px-4 sm:px-6 bg-gray-50">
+        <section id="speakers" className="py-16 sm:py-20 px-4 sm:px-6 md:px-14 bg-[var(--paper)]">
             {/* Header */}
-            <div className="max-w-6xl mx-auto text-center mb-12 sm:mb-16">
+            <div className="max-w-6xl mx-auto mb-12 sm:mb-16">
+                <div className="flex items-center gap-4 mb-8 sm:mb-10">
+                    <span className={`${spaceMono.className} text-red-600 text-xs sm:text-sm tracking-[0.3em]`}>05</span>
+                    <span className={`${spaceMono.className} text-gray-500 text-xs sm:text-sm tracking-[0.3em] uppercase`}>Speakers</span>
+                    <span className="flex-1 h-px bg-black/10" />
+                </div>
                 <motion.h2
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
                     viewport={{ once: true }}
-                    className={`${outfit.className} text-2xl sm:text-3xl md:text-5xl font-semibold text-gray-900 mb-4 sm:mb-6`}
+                    className={`${anton.className} uppercase text-3xl sm:text-5xl md:text-6xl text-center mb-4 sm:mb-6`}
                 >
                     Featured Speakers
                 </motion.h2>
@@ -127,7 +131,7 @@ export default function Speakers() {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.2 }}
                     viewport={{ once: true }}
-                    className={`${outfit.className} text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed`}
+                    className={`${outfit.className} text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto text-center leading-relaxed`}
                 >
                     Meet the visionaries, innovators, and thought leaders who will share
                     their groundbreaking ideas and inspire bold movements at
@@ -149,7 +153,7 @@ export default function Speakers() {
                                 ease: "easeOut",
                             }}
                             viewport={{ once: true, amount: 0.2 }}
-                            className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group"
+                            className="bg-white border border-black/10 hover:border-red-600 overflow-hidden transition-colors duration-300 group"
                         >
                             {/* Speaker Image */}
                             <div className="relative h-60 sm:h-72 md:h-80 overflow-hidden">
@@ -158,7 +162,7 @@ export default function Speakers() {
                                     src={speaker.speakerImage || `/silhouette.png`}
                                     alt={speaker.fullName || 'Speaker'}
                                     fill
-                                    className="object-cover group-hover:scale-110 transition-transform duration-700"
+                                    className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
                                     onError={(e) => {
                                         e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(speaker.fullName || 'Speaker')}&size=400&background=ef4444&color=white&bold=true`;
                                     }}
@@ -166,21 +170,21 @@ export default function Speakers() {
 
                                 {/* Topic Overlay - Hidden for now since topic is not in API */}
                                 <div className="absolute bottom-3 left-3 right-3 z-20">
-                                    <p className={`${outfit.className} text-red-400 text-xs sm:text-sm font-medium mb-1`}>
-                                        SPEAKER
+                                    <p className={`${spaceMono.className} text-red-500 text-[11px] tracking-[0.2em] uppercase`}>
+                                        Speaker
                                     </p>
                                 </div>
                             </div>
 
                             {/* Speaker Info */}
                             <div className="p-4 sm:p-6">
-                                <h3 className={`${outfit.className} text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-2`}>
+                                <h3 className={`${anton.className} uppercase text-lg sm:text-xl md:text-2xl mb-2 leading-tight`}>
                                     {speaker.fullName || 'Coming Soon'}
                                 </h3>
 
                                 <div className="mb-3 sm:mb-4">
                                     {speaker.title && (
-                                        <p className={`${outfit.className} text-red-600 font-semibold text-sm sm:text-base`}>
+                                        <p className={`${spaceMono.className} text-red-600 text-xs sm:text-sm tracking-wide`}>
                                             {speaker.title}
                                         </p>
                                     )}
@@ -201,7 +205,7 @@ export default function Speakers() {
                                                     href={social.socialLink}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="p-2 rounded-full bg-gray-100 hover:bg-red-600 text-gray-600 hover:text-white transition-all duration-300"
+                                                    className="p-2 border border-black/10 hover:bg-red-600 hover:border-red-600 text-gray-600 hover:text-white transition-all duration-300"
                                                     title={social.socialName}
                                                 >
                                                     {getSocialIcon(social.socialName)}
@@ -210,10 +214,10 @@ export default function Speakers() {
                                         ))
                                     ) : (
                                         <div className="flex space-x-3 opacity-50">
-                                            <div className="p-2 rounded-full bg-gray-100 text-gray-400">
+                                            <div className="p-2 border border-black/10 text-gray-400">
                                                 <Linkedin className="w-4 h-4 sm:w-5 sm:h-5" />
                                             </div>
-                                            <div className="p-2 rounded-full bg-gray-100 text-gray-400">
+                                            <div className="p-2 border border-black/10 text-gray-400">
                                                 <Twitter className="w-4 h-4 sm:w-5 sm:h-5" />
                                             </div>
                                         </div>
@@ -237,7 +241,7 @@ export default function Speakers() {
                     {`Don't miss the chance to experience these transformative talks`}
                 </p>
                 <Link href='/tickets'>
-                    <button className={`${outfit.className} cursor-pointer bg-red-600 hover:bg-red-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl`}>
+                    <button className={`${spaceMono.className} cursor-pointer bg-red-600 hover:bg-red-700 text-white px-7 sm:px-9 py-3.5 sm:py-4 text-xs sm:text-sm tracking-[0.2em] uppercase transition-colors duration-300`}>
                         Reserve Your Seat
                     </button>
                 </Link>

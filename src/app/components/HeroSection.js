@@ -19,7 +19,7 @@ export default function HeroSection() {
             <div
                 className="bg-grain bg-cover bg-no-repeat h-[85vh] sm:h-[90vh] xl:h-screen w-full flex flex-col justify-end"
                 style={{
-                    backgroundImage: "url('/images/Kamsi2.jpg')",
+                    backgroundImage: "url('https://res.cloudinary.com/djoxzzlue/image/upload/v1790074501/Kamsi2_hrfkc4.jpg')",
                     backgroundPosition: `center calc(100% + ${offsetY * 0.3}px)`,
                 }}
             >

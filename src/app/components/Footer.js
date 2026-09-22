@@ -13,6 +13,7 @@ import {
     Heart,
 } from "lucide-react";
 import { anton, spaceMono, outfit } from "../fonts";
+import Link from "next/link";
 
 export default function Footer() {
     const scrollToSection = (sectionId) => {
@@ -211,7 +212,7 @@ export default function Footer() {
                         <div className="flex flex-col lg:flex-row justify-between items-center gap-6">
                             <div className={`${spaceMono.className} flex flex-col md:flex-row items-center gap-4 text-gray-500 text-[11px] md:text-xs`}>
                                 <p className="text-center md:text-left">
-                                    © 2025 TEDxLeadCityUniversity. All rights reserved.
+                                    © 2026 TEDxLeadCityUniversity. All rights reserved.
                                 </p>
                                 <div className="flex flex-wrap items-center justify-center gap-3">
                                     <a href="#privacy" className="hover:text-red-500 transition-colors duration-300">
@@ -231,7 +232,9 @@ export default function Footer() {
                             <div className={`${spaceMono.className} flex items-center gap-2 text-gray-500 text-[11px] md:text-xs`}>
                                 <span>Made with</span>
                                 <Heart className="w-4 h-4 text-red-500 animate-pulse" />
-                                <span>for ideas worth spreading</span>
+                                <Link href="https://babatunde-ajagbe.vercel.app/" target="_blank" rel="noopener noreferrer" className="hover:text-red-500 transition-colors duration-300">
+                                    by Babatunde Ajagbe
+                                </Link>
                             </div>
                         </div>
 

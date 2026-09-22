@@ -8,15 +8,15 @@ import { ArrowRight } from "lucide-react";
 import { anton, spaceMono, outfit } from "../fonts";
 
 const images = [
-    "/images/Attendee2.jpg",
-    "/images/Attendee28.jpg",
-    "/images/Attendee83.jpg",
-    "/images/Attendee89.jpg",
-    "/images/owolabi.jpg",
-    "/images/Kamsi.jpg",
-    "/images/Group.jpg",
-    "/images/Ibukun-Akinola.jpg",
-    "/images/Davina5.jpg",
+    "https://res.cloudinary.com/djoxzzlue/image/upload/v1790074570/Attendee89_1_tge9zo.jpg",
+    "https://res.cloudinary.com/djoxzzlue/image/upload/v1790074506/Davina5_x92tme.jpg",
+    "https://res.cloudinary.com/djoxzzlue/image/upload/v1790074502/Group_eqwmx4.jpg",
+    "https://res.cloudinary.com/djoxzzlue/image/upload/v1790074502/owolabi_oedvdf.jpg",
+    "https://res.cloudinary.com/djoxzzlue/image/upload/v1790076542/Ibukun_Akinola_8_1_zjin6s.jpg",
+    "https://res.cloudinary.com/djoxzzlue/image/upload/v1790074499/Evelyn6_w5vz1a.jpg",
+    "https://res.cloudinary.com/djoxzzlue/image/upload/v1790074496/Attendees1_apcvup.jpg",
+    "https://res.cloudinary.com/djoxzzlue/image/upload/v1790076551/Attendee_60_1_ncyppb.jpg",
+    "https://res.cloudinary.com/djoxzzlue/image/upload/v1790074496/Attendee28_v1avcl.jpg",
 ];
 
 export default function Gallery() {

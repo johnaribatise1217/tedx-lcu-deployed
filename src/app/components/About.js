@@ -36,7 +36,7 @@ export default function About() {
                         {/* Left smaller image (takes 2/5 of grid) */}
                         <div className="relative md:col-span-2 col-span-3 md:h-[66vh] h-[40vh] md:w-auto w-full border-2 border-black">
                             <Image
-                                src="/images/Evelyn.jpg"
+                                src="https://res.cloudinary.com/djoxzzlue/image/upload/v1790074497/Evelyn_gfcwuq.jpg"
                                 alt="Main image"
                                 fill
                                 className="object-cover grayscale hover:grayscale-0 transition-all duration-500 ease-in-out"
@@ -47,7 +47,7 @@ export default function About() {
                         <div className="col-span-3 flex flex-col gap-4">
                             <div className="relative w-full h-[32vh] border-2 border-black">
                                 <Image
-                                    src="/images/Attendees.jpg"
+                                    src="https://res.cloudinary.com/djoxzzlue/image/upload/v1790074496/Attendees_duiljx.jpg"
                                     alt="Top image"
                                     fill
                                     className="object-cover grayscale hover:grayscale-0 transition-all duration-500 ease-in-out"

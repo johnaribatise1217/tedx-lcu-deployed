@@ -52,7 +52,7 @@ export default function WhyTedx() {
                     {/* Image */}
                     <div className="relative w-full h-[45vh] lg:h-[70vh] border-2 border-black">
                         <Image
-                            src="/images/Attendee2.jpg"
+                            src="https://res.cloudinary.com/djoxzzlue/image/upload/v1790074501/Kamsi_qq19mz.jpg"
                             alt="TEDxLCU Event"
                             fill
                             className="object-cover grayscale hover:grayscale-0 transition-all duration-500 ease-in-out"

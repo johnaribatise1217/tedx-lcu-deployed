@@ -169,7 +169,7 @@ export default function TicketBooking() {
             if (res.data?.success && res.data?.data) {
                 const matched = res.data.data
                 setAppliedDiscount(matched)
-                localStorage.setItem('discountCode', matched.code)
+                localStorage.setItem('discountCode', matched.discountCode)
                 successNotify(res.data.statusMessage || 'Discount applied')
             }
             // } else {

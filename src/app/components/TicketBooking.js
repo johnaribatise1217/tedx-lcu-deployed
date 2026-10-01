@@ -676,7 +676,7 @@ export default function TicketBooking() {
                                         <button
                                             onClick={() =>
                                                 window.open(
-                                                    "https://www.tachpae.com/events/tedx-leadcity-the-collective-2025",
+                                                    "https://www.tachpae.com/events/tedx-lead-city-university-the-ripple-effect",
                                                     "_blank"
                                                 )
                                             }
